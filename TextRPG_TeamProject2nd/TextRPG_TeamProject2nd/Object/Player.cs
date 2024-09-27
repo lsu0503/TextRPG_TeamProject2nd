@@ -8,5 +8,10 @@ namespace TextRPG_TeamProject2nd.Object
 {
     internal class Player
     {
+
+
+
+
+
     }
 }

@@ -4,7 +4,14 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            //Init()
+
+
+            //Update()
+
+
+            //Render() OR Etc..
+
         }
     }
 }
