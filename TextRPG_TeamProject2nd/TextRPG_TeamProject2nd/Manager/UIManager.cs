@@ -20,7 +20,59 @@ namespace TeamProjectBin
             StartMenu();
             Information();
             Inventory();
+
         }
+
+        //public void getSelect() // 미작동
+        //{
+        //    while (true) 
+        //    {
+        //        Console.Clear();
+        //        Console.WriteLine($"UI 창을 보시려면 1~4까지의 번호중 하나를 입력해 주세요\n");
+        //        Console.WriteLine();
+
+        //        if (int.TryParse(Console.ReadLine(), out int selectInput))
+
+        //        {
+        //            switch (selectInput)
+        //            {
+        //                case 1:
+        //                    StartLogo();
+        //                    break;
+        //                case 2:
+        //                    StartMenu();
+        //                    break;
+        //                case 3:
+        //                    Information();
+        //                    break;
+        //                case 4:
+        //                    Inventory();
+        //                    break;
+        //            }
+        //            if (selectInput >= 1 && selectInput <= 4) 
+        //                break;
+        //        }
+        //    }
+        //}
+        //public void BackSelect()   
+        //{
+        //    while (true)
+        //    {
+        //        if (int.TryParse(Console.ReadLine(), out int userInput))
+        //        {
+        //            if (userInput == 0)
+        //            {
+        //                getSelect();
+        //                break;
+        //            }
+        //            else
+        //            {
+        //                Console.WriteLine("잘못된 입력입니다.  1~4 사이의 숫자를 입력하세요.");
+        //            }
+        //        }
+        //    }
+        //}
+
 
         static void StartLogo() // 게임 스타트 화면 세로 40 가로 160
         {
