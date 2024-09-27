@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TextRPG_TeamProject2nd.Seonuk
+namespace TextRPG_TeamProject2nd.Manager
 {
-    internal interface Interface1
+    internal class GameManager
     {
     }
 }
