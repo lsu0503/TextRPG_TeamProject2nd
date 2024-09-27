@@ -13,16 +13,30 @@ namespace TextRPG_TeamProject2nd.Object
     internal class Item
     {
 
-        void Attack() { }
-        void Defence() { }
-        void Drink() { }
+        /// <summary>
+        /// 프로토타입 기능입니다, 해당 객체를 복사하여 완전하게 동일한 새로운 객체를 생성합니다.
+        /// </summary>
+        /// <returns></returns>
+        public Item Clone()
+        {
+            Item ret= new Item();
+            ret.id          = id;
+            ret.damage      = damage;
+            ret.defence     = defence;
+            ret.actionPoint = actionPoint;
+            ret.name        = name;
+            ret.skill       = skill;
+            ret.type        = type;
+
+            return ret;
+        }
 
         public int id           { get; set; }
         public int damage       { get; set; }
         public int defence      { get; set; }
         public int actionPoint  { get; set; }
         public string name      { get; set; }
-        public string skill     { get; set; }
+        public List<int> skill  { get; set; }
         public ITEMTYPE type    { get; set; }
     }
 }
