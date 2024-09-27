@@ -8,8 +8,13 @@ namespace TextRPG_TeamProject2nd.Utils
 {
     public interface IObject
     {
-        int Id { get; }
-        string Name { get; }
-        string Desc { get; }
+        int id { get; }
+        string name { get; }
+        string desc { get; }
+    }
+
+    public interface IClone<T>
+    {
+        T Clone();
     }
 }

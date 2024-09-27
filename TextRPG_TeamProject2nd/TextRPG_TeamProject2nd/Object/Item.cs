@@ -10,7 +10,7 @@ namespace TextRPG_TeamProject2nd.Object
     }
 
 
-    internal class Item
+    internal class Item: IObject, IClone<Item>
     {
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace TextRPG_TeamProject2nd.Object
         {
             Item ret= new Item();
             ret.id          = id;
-            ret.damage      = damage;
+            ret.attack      = attack;
             ret.defence     = defence;
             ret.actionPoint = actionPoint;
             ret.name        = name;
@@ -32,7 +32,7 @@ namespace TextRPG_TeamProject2nd.Object
         }
 
         public int id           { get; set; }
-        public int damage       { get; set; }
+        public int attack       { get; set; }
         public int defence      { get; set; }
         public int actionPoint  { get; set; }
         public int value        { get; set; }

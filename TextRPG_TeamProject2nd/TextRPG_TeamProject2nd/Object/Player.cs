@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using TextRPG_TeamProject2nd.Manager;
+﻿using TextRPG_TeamProject2nd.Manager;
 
 namespace TextRPG_TeamProject2nd.Object
 {
@@ -49,12 +42,12 @@ namespace TextRPG_TeamProject2nd.Object
             weapon = null;
             armor = null;
 
-            InisializeCharacter();
+            InitializeCharacter();
             UpdateEquipment();
         }
 
         
-        public void InisializeCharacter()
+        public void InitializeCharacter()
         {
             hpMax = race.hp;
             hpCur = hpMax;
@@ -114,11 +107,27 @@ namespace TextRPG_TeamProject2nd.Object
         
         public void UpdateEquipment()
         {
-            attack = race.attack + weapon.damage;
-            defence = race.defence + weapon.defence;
-            actionPoint = race.actionPoint + weapon.actionPoint;
+            attack = race.attack;
+            defence = race.defence;
+            actionPoint = race.actionPoint;
 
-            skillList = ObjectManager.Instance().Get
+            if (weapon != null)
+            {
+                attack += weapon.attack;
+                defence += weapon.defence;
+                actionPoint += weapon.actionPoint;
+            }
+
+            if (armor != null)
+            {
+                attack += armor.attack;
+                defence += armor.defence;
+                actionPoint += armor.actionPoint;
+            }
+
+            skillList.Clear();
+            for (int i = 0; i < skillList.Count; i++)
+                skillList.Add(ObjectManager.Instance().GetSkill(weapon.skill[i]));
         }
 
         public void RewardExp(int _amount)
@@ -131,7 +140,7 @@ namespace TextRPG_TeamProject2nd.Object
                 level++;
                 expMax = (int)(100 * MathF.Pow(2.5f, level) - 50 * MathF.Pow(level, 2)); // 임시 지정.
 
-                InisializeCharacter();
+                InitializeCharacter();
             }
         }
 
@@ -151,31 +160,23 @@ namespace TextRPG_TeamProject2nd.Object
             UpdateEquipment();
         }
 
-        string name;
-
-        Race race;
-
-        int hpCur;
-        int hpMax;
-        bool isDead;
-
-        int attack;
-        int defence;
-        int actionPoint;
-
-        int apCur;
-        int bpCur;
-        int bpMin;
-
-        int level;
-        int expCur;
-        int expMax;
-
-        int[] statRank = new int[5];
-
-        List<Skill> skillList = new List<Skill>();
-
-        Item weapon;
-        Item armor;
+        string name            { get; set; }
+        Race race              { get; set; }
+        int hpCur              { get; set; }
+        int hpMax              { get; set; }
+        bool isDead            { get; set; }
+        int attack             { get; set; }
+        int defence            { get; set; }
+        int actionPoint        { get; set; }
+        int apCur              { get; set; }
+        int bpCur              { get; set; }
+        int bpMin              { get; set; }
+        int level              { get; set; }
+        int expCur             { get; set; }
+        int expMax             { get; set; }
+        int[] statRank         { get; set; } = new int[5];
+        List<Skill> skillList  { get; set; } = new List<Skill>();
+        Item weapon            { get; set; }
+        Item armor             { get; set; }
     }
 }
