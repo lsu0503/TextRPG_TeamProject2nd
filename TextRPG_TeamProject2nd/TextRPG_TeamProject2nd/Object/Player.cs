@@ -2,35 +2,37 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using TextRPG_TeamProject2nd.Manager;
 
 namespace TextRPG_TeamProject2nd.Object
 {
     struct Race
     {
-        public Race(int _idRace, string _nameRace, string _detailRace, int _hpBase, int _attributeAttack, int _attributeDefence, int _attributeAction)
+        public Race(int _id, string _name, string _desc, int _hp, int _attack, int _defence, int _actionPoint)
         {
-            idRace = _idRace;
-            nameRace = _nameRace;
-            detailRace = _detailRace;
+            id = _id;
+            name = _name;
+            desc = _desc;
 
-            hpBase = _hpBase;
+            hp = _hp;
 
-            attributeAttack = _attributeAttack;
-            attributeDefence = _attributeDefence;
-            attributeAction = _attributeAction;
+            attack = _attack;
+            defence = _defence;
+            actionPoint = _actionPoint;
         }
 
-        public int idRace;
-        public string nameRace;
-        public string detailRace;
+        public int id;
+        public string name;
+        public string desc;
 
-        public int hpBase;
+        public int hp;
 
-        public int attributeAttack;
-        public int attributeDefence;
-        public int attributeAction;
+        public int attack;
+        public int defence;
+        public int actionPoint;
     }
 
     internal class Player
@@ -54,7 +56,7 @@ namespace TextRPG_TeamProject2nd.Object
         
         public void InisializeCharacter()
         {
-            hpMax = race.hpBase;
+            hpMax = race.hp;
             hpCur = hpMax;
             isDead = false;
 
@@ -69,7 +71,7 @@ namespace TextRPG_TeamProject2nd.Object
 
         public int TakeDamage(int _damage)
         {
-            float tempDamageFloat = _damage / attributeDefence;
+            float tempDamageFloat = _damage / defence;
 
             int tempDamageInt = (int)tempDamageFloat;
 
@@ -101,7 +103,7 @@ namespace TextRPG_TeamProject2nd.Object
             if (apCur > 0)
                 bpCur = apCur + bpMin;
 
-            apCur = attributeAction + (int)MathF.Min(apCur, 0);
+            apCur = actionPoint + (int)MathF.Min(apCur, 0);
         }
 
         public float CalculateRank(int _type)
@@ -112,11 +114,11 @@ namespace TextRPG_TeamProject2nd.Object
         
         public void UpdateEquipment()
         {
-            attributeAttack = race.attributeAttack + weapon.attributeAttack;
-            attributeDefence = race.attributeDefence + weapon.attributeAttack;
-            attributeAction = race.attributeAction + weapon.attributeAction;
+            attack = race.attack + weapon.damage;
+            defence = race.defence + weapon.defence;
+            actionPoint = race.actionPoint + weapon.actionPoint;
 
-            skillList = weapon.skillList.ToList();
+            skillList = ObjectManager.Instance().Get
         }
 
         public void RewardExp(int _amount)
@@ -157,9 +159,9 @@ namespace TextRPG_TeamProject2nd.Object
         int hpMax;
         bool isDead;
 
-        int attributeAttack;
-        int attributeDefence;
-        int attributeAction;
+        int attack;
+        int defence;
+        int actionPoint;
 
         int apCur;
         int bpCur;
