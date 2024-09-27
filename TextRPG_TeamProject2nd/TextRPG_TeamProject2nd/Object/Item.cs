@@ -35,6 +35,9 @@ namespace TextRPG_TeamProject2nd.Object
         public int damage       { get; set; }
         public int defence      { get; set; }
         public int actionPoint  { get; set; }
+        public int value        { get; set; }
+        public int amount       { get; set; }
+        public string desc      { get; set; }
         public string name      { get; set; }
         public List<int> skill  { get; set; }
         public ITEMTYPE type    { get; set; }
