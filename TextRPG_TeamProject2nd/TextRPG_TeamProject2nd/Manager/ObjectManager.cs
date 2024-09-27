@@ -70,8 +70,8 @@ namespace TextRPG_TeamProject2nd.Manager
         {
             foreach (Skill skill in skills)
             {
-                if (mob.id == _id)
-                    return mob.Clone();
+                if (skill.id == _id)
+                    return skill.Clone();
             }
 
             return null;
