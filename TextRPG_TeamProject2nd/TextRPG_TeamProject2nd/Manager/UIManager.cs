@@ -8,20 +8,7 @@ namespace TeamProjectBin
     {
 
  
-        static void Main(string[] args) // 메인 함수
-        {
-            Console.SetWindowSize(161, 41);
-
-            int left = 1;
-            int top = 1;
-            Console.SetCursorPosition(0, 0);
-
-            StartLogo();
-            StartMenu();
-            Information();
-            Inventory();
-
-        }
+       
 
         //public void getSelect() // 미작동
         //{

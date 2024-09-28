@@ -39,7 +39,7 @@ namespace TextRPG_TeamProject2nd.Object
         public int amount       { get; set; }
         public string desc      { get; set; }
         public string name      { get; set; }
-        public List<int> skill  { get; set; }
+        public List<int>? skill { get; set; }
         public ITEMTYPE type    { get; set; }
     }
 }

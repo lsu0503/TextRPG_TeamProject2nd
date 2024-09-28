@@ -2,32 +2,7 @@
 
 namespace TextRPG_TeamProject2nd.Object
 {
-    struct Race
-    {
-        public Race(int _id, string _name, string _desc, int _hp, int _attack, int _defence, int _actionPoint)
-        {
-            id = _id;
-            name = _name;
-            desc = _desc;
-
-            hp = _hp;
-
-            attack = _attack;
-            defence = _defence;
-            actionPoint = _actionPoint;
-        }
-
-        public int id;
-        public string name;
-        public string desc;
-
-        public int hp;
-
-        public int attack;
-        public int defence;
-        public int actionPoint;
-    }
-
+   
     internal class Player
     {
         // 생성자

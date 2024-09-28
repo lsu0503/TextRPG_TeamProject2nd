@@ -10,7 +10,7 @@ namespace TextRPG_TeamProject2nd.Manager
                 instance = new ObjectManager();
 
             return instance;
-        }   ///생성자 및 초기화 함수
+        }   
         public void Init()
         {
             
@@ -30,7 +30,7 @@ namespace TextRPG_TeamProject2nd.Manager
             }
 
             return null;
-        }           // 외부에 노출 되는 클래스의 기능 함수()
+        }           
         /// <summary>
         /// 맵의 ID를 이용하여 맵을 생성합니다.
         /// </summary>
@@ -76,15 +76,31 @@ namespace TextRPG_TeamProject2nd.Manager
 
             return null;
         }
+        /// <summary>
+        /// 직업의 ID를 이용하여 직업을 생성합니다(직업 오브젝트)
+        /// </summary>
+        /// <param name="_id"></param>
+        /// <returns></returns>
+        public Skill    GetRace(int _id)
+        {
+            foreach (Race race in races)
+            {
+                if (race.id == _id)
+                    return race.Clone();
+            }
+
+            return null;
+        }
         //------------------------------------------------------//
-                                                      // 내부에서만 사용 할 함수
 
 
+
         //------------------------------------------------------//
-        private List<Item>    items    =  new List<Item>(); // 변수 목록
+        private List<Item>    items    =  new List<Item>(); 
         private List<Map>     maps     =  new List<Map>();
         private List<Monster> monsters =  new List<Monster>();
         private List<Skill>   skills   =  new List<Skill>();
-        static ObjectManager instance  =  null;
+        private List<Race>    races    = new List<Race>();
+        static ObjectManager? instance  =  null;
     }
 }
