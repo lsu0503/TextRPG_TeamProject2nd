@@ -1,4 +1,5 @@
-﻿using TextRPG_TeamProject2nd.Object;
+﻿using System.Text;
+using TextRPG_TeamProject2nd.Object;
 
 namespace TextRPG_TeamProject2nd.Manager
 {
@@ -28,7 +29,7 @@ namespace TextRPG_TeamProject2nd.Manager
                         Item item = new Item
                         {
                             id = int.Parse(values[0]),
-                            damage = int.Parse(values[1]),
+                            attack = int.Parse(values[1]),
                             defence = int.Parse(values[2]),
                             actionPoint = int.Parse(values[3]),
                             value = int.Parse(values[4]),
@@ -47,10 +48,13 @@ namespace TextRPG_TeamProject2nd.Manager
         }
         public static void PrintItems(List<Item> items)
         {
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine(Console.OutputEncoding.EncodingName);
+
             foreach (Item item in items)
             {
                 Console.Write($"{item.id}");
-                Console.Write($"\t{item.damage}");
+                Console.Write($"\t{item.attack}");
                 Console.Write($"\t{item.defence}");
                 Console.Write($"\t{item.actionPoint}");
                 Console.Write($"\t{item.value}");
