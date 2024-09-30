@@ -1,4 +1,5 @@
 ﻿using TextRPG_TeamProject2nd.Object;
+using TextRPG_TeamProject2nd.Utils;
 namespace TextRPG_TeamProject2nd.Manager
 {
     enum SCENESTATE
@@ -140,8 +141,8 @@ namespace TextRPG_TeamProject2nd.Manager
 
             while(true)
             {
-                //전투중!
-                break;//전투끝!
+                
+                break;
             }
         }
         private void SceneStore()
@@ -174,7 +175,9 @@ namespace TextRPG_TeamProject2nd.Manager
         {
             sceneState = type;
         }
+        public Player GetCurrentPlayer() { return player; }
 
+        
         //사용자 입력
         public int InputKey()
         {

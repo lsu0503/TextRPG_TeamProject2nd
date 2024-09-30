@@ -1,157 +1,73 @@
-﻿using TextRPG_TeamProject2nd.Manager;
+﻿using TextRPG_TeamProject2nd.Utils;
+using TextRPG_TeamProject2nd.Manager;
+using TextRPG_TeamProject2nd.Object;
+using Microsoft.VisualBasic;
 
 namespace TextRPG_TeamProject2nd.Object
 {
-   
+
     internal class Player
     {
-        // 생성자
-        public Player(string _name, Race _race)
+        public void Init()
         {
-            name = _name;
-            race = _race;
-
-            level = 0;
-            expCur = 0;
-
-            weapon = null;
-            armor = null;
-
-            InitializeCharacter();
-            UpdateEquipment();
+            skillList = new List<Skill>();
+            playerInfo = new PlayerInfo();
         }
-
-        
-        public void InitializeCharacter()
+        //-----------------
+        /// <summary>
+        /// 사용할 스킬(전투중 액션 번호), 몬스터 객체를 입력받아 해당 몬스터 객체에게 스킬효과를 가합니다.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="mob"></param>
+        public void UseSkill(int index, Monster mob = null)
         {
-            hpMax = race.hp;
-            hpCur = hpMax;
-            isDead = false;
-
-            apCur = 0;
-            bpCur = 0;
-            bpMin = 0;
-
-            statRank = new int[] { 0, 0, 0, 0, 0 };
-
-            UpdateEquipment();
-        }
-
-        public int TakeDamage(int _damage)
-        {
-            float tempDamageFloat = _damage / defence;
-
-            int tempDamageInt = (int)tempDamageFloat;
-
-            if (tempDamageFloat % 1.0f > 0.5f) // 반올림
-                tempDamageInt = (int)tempDamageFloat++;
-
-            hpCur -= tempDamageInt;
-
-            if (hpCur <= 0)
-            {
-                hpCur = 0;
-                isDead = true;
-            }
-
-            return tempDamageInt;
-        }
-
-        public int TakeRecover(int _amount)
-        {
-            int healAmount = (int)MathF.Min(_amount, hpMax - hpCur);
-
-            hpCur += healAmount;
-
-            return healAmount;
-        }
-
-        public void OnNextTurn()
-        {
-            if (apCur > 0)
-                bpCur = apCur + bpMin;
-
-            apCur = actionPoint + (int)MathF.Min(apCur, 0);
-        }
-
-        public float CalculateRank(int _type)
-        {
-            return MathF.Max(1.0f, 1.0f + (0.25f * statRank[_type])) / MathF.Max(1.0f, 1.0f - (0.25f * statRank[_type])); ;
-        }
-
-        
-        public void UpdateEquipment()
-        {
-            attack = race.attack;
-            defence = race.defence;
-            actionPoint = race.actionPoint;
-
-            if (weapon != null)
-            {
-                attack += weapon.attack;
-                defence += weapon.defence;
-                actionPoint += weapon.actionPoint;
-            }
-
-            if (armor != null)
-            {
-                attack += armor.attack;
-                defence += armor.defence;
-                actionPoint += armor.actionPoint;
-            }
-
-            skillList.Clear();
-            for (int i = 0; i < skillList.Count; i++)
-                skillList.Add(ObjectManager.Instance().GetSkill(weapon.skill[i]));
-        }
-
-        public void RewardExp(int _amount)
-        {
-            expCur += _amount;
-
-            if (expCur >= expMax)
-            {
-                expCur -= expMax;
-                level++;
-                expMax = (int)(100 * MathF.Pow(2.5f, level) - 50 * MathF.Pow(level, 2)); // 임시 지정.
-
-                InitializeCharacter();
-            }
-        }
-
-        public void EquipEquipment(Item _item)
-        {
-            switch (_item.type)
-            {
-                case ITEMTYPE.WEAPON:
-                    weapon = _item;
-                    break;
-
-                case ITEMTYPE.ARMOR:
-                    armor = _item;
-                    break;
-            }
+            isAttack += mob.Damaged;
+            SKILLTYPE type = skillList[index].type;
             
-            UpdateEquipment();
+            if (playerInfo != null && (type == SKILLTYPE.ATTACK))
+            {
+                isAttack?.Invoke(playerInfo.attack + skillList[index].power); //attack
+            }
+            else if (playerInfo != null && type == SKILLTYPE.HEAL)
+            {
+                playerInfo.hp = Math.Min(playerInfo.maxHp, playerInfo.hp + skillList[index].power);
+            }
+        }
+        public void Damaged(int damage)
+        {
+            if (playerInfo != null)
+                playerInfo.hp = Math.Max(0, playerInfo.hp - damage);
+        }
+        //-----------------
+        void CreatePlayer(PlayerInfo info)
+        {
+            playerInfo = info;
+            //세이브()
+
         }
 
-        string name            { get; set; }
-        Race race              { get; set; }
-        int hpCur              { get; set; }
-        int hpMax              { get; set; }
-        bool isDead            { get; set; }
-        int attack             { get; set; }
-        int defence            { get; set; }
-        int actionPoint        { get; set; }
-        int apCur              { get; set; }
-        int bpCur              { get; set; }
-        int bpMin              { get; set; }
-        int level              { get; set; }
-        int expCur             { get; set; }
-        int expMax             { get; set; }
-        int[] statRank         { get; set; } = new int[5];
-        List<Skill> skillList  { get; set; } = new List<Skill>();
-        Item weapon            { get; set; }
-        Item armor             { get; set; }
+        void SavePlayer()
+        {
+            //세이브
+           
+        }
+
+        void LoadPlayer()
+        {
+            //로드
+        }
+
+
+        //-----------------
+
+        //-----------------
+
+        PlayerInfo? playerInfo;
+        List<Skill>? skillList;
+        Item? weapon = null;
+        Item? armor = null;
+
+        //==
+        public event UseSkillCallback? isAttack;
     }
 }
