@@ -1,7 +1,7 @@
 ﻿using TextRPG_TeamProject2nd.Object;
 namespace TextRPG_TeamProject2nd.Manager
 {
-    enum SceneState
+    enum SCENESTATE
     {
         NONE,
         MAIN,
@@ -10,6 +10,7 @@ namespace TextRPG_TeamProject2nd.Manager
         STORE,
         INVEN,
         QUEST,
+        END,
     }
     enum RACETYPE
     {
@@ -40,26 +41,30 @@ namespace TextRPG_TeamProject2nd.Manager
         {
             switch (sceneState)
             {
-                case SceneState.NONE:
+                case SCENESTATE.NONE:
                     SceneNone();
                     break;
-                case SceneState.MAIN:
+                case SCENESTATE.MAIN:
                     SceneMain();
                     break;
-                case SceneState.VILLAGE:
+                case SCENESTATE.VILLAGE:
                     SceneVIllage();
                     break;
-                case SceneState.FILED:
+                case SCENESTATE.FILED:
                     SceneFiled();
                     break;
-                case SceneState.STORE:
+                case SCENESTATE.STORE:
                     SceneStore();
                     break;
-                case SceneState.INVEN:
+                case SCENESTATE.INVEN:
                     SceneStore();
                     break;
-                case SceneState.QUEST:
+                case SCENESTATE.QUEST:
                     SceneOuest();
+                    break;
+                case SCENESTATE.END:
+                    //SAVE()
+                    //TODO
                     break;
             }
         }
@@ -101,35 +106,71 @@ namespace TextRPG_TeamProject2nd.Manager
                 Console.Clear();
             }
 
-            ChangeScene(SceneState.VILLAGE);
+            ChangeScene(SCENESTATE.VILLAGE);
         }
         private void SceneMain()
         {
-
+            Console.Clear();
+            Console.WriteLine("더미 메인화면 입니다.");
+            Console.WriteLine("[0]:시작 [1]:종료");
+            int input = InputKey();
+            if(input == 0)
+                ChangeScene(SCENESTATE.VILLAGE);
+            else Environment.Exit(0);
         }
         private void SceneVIllage()
         {
+            Console.Clear();
             Console.WriteLine("마을입니다.");
+            Console.WriteLine("[0]:상점 [1]:퀘스트 [2]:보관함 [3]:던 전 [4]:저장 및 종료");
+            int input = InputKey();
+            if (input == 0)         ChangeScene(SCENESTATE.STORE);
+            else if (input == 1)    ChangeScene(SCENESTATE.QUEST);
+            else if (input == 2)    ChangeScene(SCENESTATE.STORE);
+            else if (input == 3)    ChangeScene(SCENESTATE.FILED);
+            else if (input == 4)    Environment.Exit(0); //SAVE
         }
         private void SceneFiled()
         {
+            Console.Clear();
+            Console.WriteLine("던전을 고르세요!");
+            Console.WriteLine("[0]:마을로이동 [1]:더미던전");
+            int input = InputKey();
+            if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
 
+            while(true)
+            {
+                //전투중!
+                break;//전투끝!
+            }
         }
         private void SceneStore()
         {
-
+            Console.Clear();
+            Console.WriteLine("상점 공간입니다.");
+            Console.WriteLine("[0]:마을로이동");
+            int input = InputKey();
+            if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
         }
         private void SceneInven()
         {
-
+            Console.Clear();
+            Console.WriteLine("아이템을 보관하고 장착하는 인벤토리 입니다.");
+            Console.WriteLine("[0]:마을로이동");
+            int input = InputKey();
+            if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
         }
         private void SceneOuest()
         {
-
+            Console.Clear();
+            Console.WriteLine("이곳에 퀘스트UI와 정보가 등록됩니다.");
+            Console.WriteLine("[0]:마을로이동");
+            int input = InputKey();
+            if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
         }
 
         //유틸
-        private void ChangeScene(SceneState type)
+        private void ChangeScene(SCENESTATE type)
         {
             sceneState = type;
         }
@@ -164,7 +205,7 @@ namespace TextRPG_TeamProject2nd.Manager
         //---------------------------------------------------------------
         static GameManager? instance;
         private Player? player = null;
-        private SceneState sceneState = SceneState.NONE;
+        private SCENESTATE sceneState = SCENESTATE.MAIN;
 
     }
 }

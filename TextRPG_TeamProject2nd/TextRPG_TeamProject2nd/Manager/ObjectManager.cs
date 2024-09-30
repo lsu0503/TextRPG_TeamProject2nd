@@ -6,7 +6,7 @@ namespace TextRPG_TeamProject2nd.Manager
         //------------------------------------------------------//
         public static ObjectManager Instance()
         {
-            if (Instance == null)
+            if (instance == null)
                 instance = new ObjectManager();
 
             return instance;
@@ -85,8 +85,8 @@ namespace TextRPG_TeamProject2nd.Manager
         {
             foreach (Race race in races)
             {
-                if (race.id == _id)
-                    return race.Clone();
+                if (race.id == _id) { }
+                    //return race.Clone();
             }
 
             return null;
@@ -96,11 +96,11 @@ namespace TextRPG_TeamProject2nd.Manager
 
 
         //------------------------------------------------------//
-        private List<Item>    items    =  new List<Item>(); 
-        private List<Map>     maps     =  new List<Map>();
-        private List<Monster> monsters =  new List<Monster>();
-        private List<Skill>   skills   =  new List<Skill>();
-        private List<Race>    races    = new List<Race>();
+        private List<Item>    items     =  new List<Item>(); 
+        private List<Map>     maps      =  new List<Map>();
+        private List<Monster> monsters  =  new List<Monster>();
+        private List<Skill>   skills    =  new List<Skill>();
+        private List<Race>    races     = new List<Race>();
         static ObjectManager? instance  =  null;
     }
 }
