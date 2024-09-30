@@ -9,7 +9,7 @@ namespace TextRPG_TeamProject2nd.Object
         HEAL
     }
 
-    internal class Skill: IObject, IClone<Skill>
+    internal class Skill: IClone<Skill>
     {
         public Skill Clone()
         {
@@ -19,22 +19,15 @@ namespace TextRPG_TeamProject2nd.Object
             ret.type             = type;
             ret.name             = name;
             ret.desc             = desc;
-
             ret.power            = power;
-            ret.RankChangeTarget = RankChangeTarget.ToArray();
-            ret.RankChangeSelf   = RankChangeSelf.ToArray();
-
             return ret;
         }
-
 
         public int id                 { get; set; }
         public SKILLTYPE type         { get; set; }
         public string name            { get; set; }
-        public string desc            { get; set; }
-        
+        public string desc            { get; set; } 
         public int power              { get; set; }
-        public int[] RankChangeTarget { get; set; } = new int[5];
-        public int[] RankChangeSelf   { get; set; } = new int[5];
+       
     }
 }

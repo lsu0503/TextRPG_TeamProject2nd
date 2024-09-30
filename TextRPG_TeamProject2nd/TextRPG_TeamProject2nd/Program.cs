@@ -12,7 +12,7 @@ namespace TextRPG_TeamProject2nd
             ObjectManager.Instance().Init();
 
             //Update()
-            while(true)
+            while (true)
             {
                 GameManager.Instance().Update();
             }

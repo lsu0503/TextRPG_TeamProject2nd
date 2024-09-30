@@ -10,7 +10,7 @@ namespace TextRPG_TeamProject2nd.Object
     }
 
 
-    internal class Item: IObject, IClone<Item>
+    internal class Item: IClone<Item>
     {
 
         /// <summary>
