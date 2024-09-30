@@ -2,6 +2,7 @@
 using TextRPG_TeamProject2nd.Manager;
 using TextRPG_TeamProject2nd.Object;
 using Microsoft.VisualBasic;
+using System.Numerics;
 
 namespace TextRPG_TeamProject2nd.Object
 {
@@ -48,15 +49,15 @@ namespace TextRPG_TeamProject2nd.Object
 
         void SavePlayer()
         {
-            //세이브
+           
            
         }
 
         void LoadPlayer()
         {
             //로드
+           
         }
-
 
         //-----------------
 

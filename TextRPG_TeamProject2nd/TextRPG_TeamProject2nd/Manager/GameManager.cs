@@ -176,7 +176,6 @@ namespace TextRPG_TeamProject2nd.Manager
             sceneState = type;
         }
         public Player GetCurrentPlayer() { return player; }
-
         
         //사용자 입력
         public int InputKey()

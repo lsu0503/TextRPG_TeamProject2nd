@@ -28,6 +28,7 @@ namespace TextRPG_TeamProject2nd.Object
         public string name            { get; set; }
         public string desc            { get; set; } 
         public int power              { get; set; }
+        public int cost               { get; set; }
        
     }
 }

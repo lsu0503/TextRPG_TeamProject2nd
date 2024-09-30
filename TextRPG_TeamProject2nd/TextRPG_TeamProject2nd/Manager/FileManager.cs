@@ -45,20 +45,6 @@ namespace TextRPG_TeamProject2nd.Manager
             }
             return items;
         }
-        public static void PrintItems(List<Item> items)
-        {
-            foreach (Item item in items)
-            {
-                Console.Write($"{item.id}");
-                Console.Write($"\t{item.damage}");
-                Console.Write($"\t{item.defence}");
-                Console.Write($"\t{item.actionPoint}");
-                Console.Write($"\t{item.value}");
-                Console.Write($"\t{item.amount}");
-                Console.Write($"\t{item.desc}");
-                Console.Write($"\t{item.name}");
-                Console.WriteLine($"\t{item.skill}");
-            }
-        }
+                
     }
 }

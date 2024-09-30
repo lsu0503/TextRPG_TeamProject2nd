@@ -26,6 +26,7 @@ namespace TextRPG_TeamProject2nd.Utils
         public string[]? skillList  { get; set; }
         public string[]? dropList   { get; set; }
 
+        public int id       { get; set; }
         public int level    { get; set; }
         public int hp       { get; set; }
         public int maxHp    { get; set; }
@@ -35,10 +36,11 @@ namespace TextRPG_TeamProject2nd.Utils
 
     class MapInfo
     {
+        public int id           { get; set; }
+        public int levelLimit   { get; set; }
         public string? name     { get; set; }
         public string? desc     { get; set; }
         public string[]? mobId  { get; set; }     
-        public int levelLimit   { get; set; }
     }
 
 
