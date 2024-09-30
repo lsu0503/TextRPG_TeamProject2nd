@@ -16,7 +16,11 @@ namespace TeamProjectBin
             Console.SetCursorPosition(0, 0);
             Console.WriteLine("===================================================================================================="); // 반각으로 100자.
 
-            int xTurm = (100 - _titleText.Length) / 2; // 중앙정렬. 100자에서 글자 수를 뺸 다음 2로 나누기.
+            int titleByteLength = Encoding.Default.GetByteCount(_titleText); // 문자열의 바이트 크기 구하기.
+            int fullwidthAmount = (titleByteLength - _titleText.Length) / 2; // (바이트 크기 - 문자열 길이) / [한글과 영어의 바이트 차이] = 전각 문자 개수.
+            int titleTextLength = fullwidthAmount + _titleText.Length; // 전각 문자 갯수 만큼 문자열 길이에 가산.
+
+            int xTurm = (100 - titleTextLength) / 2; // 중앙정렬. 100자에서 글자 수를 뺸 다음 2로 나누기.
             Console.CursorLeft = xTurm;
             Console.WriteLine(_titleText);
 
@@ -148,7 +152,7 @@ namespace TeamProjectBin
         }
 
         // 판매 완료 시 표시.
-        public void DisplayShoSellText(Item _itemBought)
+        public void DisplayShopSellText(Item _itemBought)
         {
             Console.WriteLine($"{_itemBought.name}을 {(int)(_itemBought.value * 0.85f)}에 판매하셨습니다.");
         }
