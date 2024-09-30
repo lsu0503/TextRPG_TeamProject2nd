@@ -21,6 +21,7 @@ namespace TeamProjectBin
             Console.WriteLine("====================================================================================================");
         }
 
+        /*
         static void DisplayPlayerInfoRight(Player _player)
         {
             List<string> tempStringList = new List<string>();
@@ -39,10 +40,46 @@ namespace TeamProjectBin
 
             for (int i = 0; i < tempStringList.Count; i++)
             {
+                // UTF-8일 경우 한글은 한 자에 3Byte로 구성된다. 이를 참고하여 수식을 구성했다.
+                // euc-kr일 경우에는 한글은 한 자에 2Byte로 구성된다.
                 wordLengthByte = Encoding.Default.GetByteCount(tempStringList[i]);
-                Console.SetCursorPosition(windowWidth - (wordLengthByte + 1), i);
+                Console.SetCursorPosition(windowWidth - (((wordLengthByte - tempStringList[i].Length) / 2) + tempStringList[i].Length + 1), i);
                 Console.Write(tempStringList[i]);
             }
+        }
+        */
+
+        public void DisplayStartMenu()
+        {
+            Console.WriteLine("[1] 새로 시작");
+            Console.WriteLine("[2] 불러오기");
+            Console.WriteLine("[0] 게임 종료");
+        }
+
+        public void DisplaySaveSlot()
+        {
+            // 세이브 시스템 제작 이후 작성하자.
+        }
+
+        public void DisplayVillageMenu()
+        {
+            Console.WriteLine("[1] 상  점: 래비츠 인더스트리");
+            Console.WriteLine("[2] 보관함: 랫츠 보이드 오프너");
+            Console.WriteLine("[3] 퀘스트: 도기독스 알선소");
+            Console.WriteLine("[4] 던  전: 원정 고양이 협회");
+            Console.WriteLine("[0] 나가기: 양 한마리 여관");
+        }
+
+        public void DisplayShopEntrance()
+        {
+            Console.WriteLine("[1] 구매하기");
+            Console.WriteLine("[2] 판매하기");
+            Console.WriteLine("[0] 나 가 기");
+        }
+
+        public void DisplayShopMerchandise(int _index)
+        {
+            
         }
 
         public void PositionCursorToInput()
