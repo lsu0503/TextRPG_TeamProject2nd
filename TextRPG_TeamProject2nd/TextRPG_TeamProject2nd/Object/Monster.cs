@@ -52,6 +52,61 @@ namespace TextRPG_TeamProject2nd.Object
             }
         }
 
+        public int TakeDamage(int _damage)
+        {
+            float tempDamageFloat = _damage / defence;
+
+            int tempDamageInt = (int)tempDamageFloat;
+
+            if (tempDamageFloat % 1.0f > 0.5f) // 반올림
+                tempDamageInt = (int)tempDamageFloat++;
+
+            hpCur -= tempDamageInt;
+
+            if (hpCur <= 0)
+            {
+                hpCur = 0;
+                isDead = true;
+            }
+
+            return tempDamageInt;
+        }
+
+        public int TakeRecover(int _amount)
+        {
+            int healAmount = (int)MathF.Min(_amount, hpMax - hpCur);
+
+            hpCur += healAmount;
+
+            return healAmount;
+        }
+
+        public void OnNextTurn()
+        {
+            if (apCur > 0)
+                bpCur = apCur + bpMin;
+
+            apCur = actionPoint + (int)MathF.Min(apCur, 0);
+
+
+        }
+
+        public float CalculateRank(int _type)
+        {
+            return MathF.Max(1.0f, 1.0f + (0.25f * statRank[_type])) / MathF.Max(1.0f, 1.0f - (0.25f * statRank[_type])); ;
+        }
+
+        public int DropItem()
+        {
+            Random rand = new Random();
+
+            if (rand.NextDouble() <= probabilityDrop)
+                return rand.Next(0, listDropItem.Count);
+
+            else
+                return -1;
+        }
+
         public int id                 { get; set; }
         public string name            { get; set; }
         public string desc            { get; set; }
