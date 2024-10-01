@@ -9,6 +9,7 @@ namespace TextRPG_TeamProject2nd.Utils
     class PlayerInfo
     {
         public string? name    { get; set; }
+        public string? race    { get; set; }
         public int weaponId    { get; set; }
         public int armorId     { get; set; }
         public int level       { get; set; }

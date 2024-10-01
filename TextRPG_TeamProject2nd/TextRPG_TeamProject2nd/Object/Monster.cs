@@ -8,7 +8,6 @@ namespace TextRPG_TeamProject2nd.Object
     {
         public void Init()
         {
-            mobInfo = new MobInfo();
             Player player = GameManager.Instance().GetCurrentPlayer();
             player.isAttack += Damaged;
         }
@@ -49,8 +48,8 @@ namespace TextRPG_TeamProject2nd.Object
 
        
         //--------------------------------------
-        private MobInfo? mobInfo;
-        private List<Skill>? skillList;
+        private MobInfo? mobInfo = new MobInfo();
+        private List<Skill>? skillList = new List<Skill>();
         public event UseSkillCallback? isAttack;
     }
 }

@@ -13,6 +13,7 @@ namespace TextRPG_TeamProject2nd.Manager
         QUEST,
         END,
     }
+
     internal class GameManager
     {
         
@@ -26,14 +27,8 @@ namespace TextRPG_TeamProject2nd.Manager
         }
         public void Init()
         {
-            if(!FileManager.Instance().LoadPlayer())
-            {
-                ChangeScene(SCENESTATE.NONE);
-            }
-
-            player = new Player();
             storeList = new List<Item>();
-            InitStore();
+            player = new Player();
         }
         //---------------------------------------------------------------
         public void Update()
@@ -56,7 +51,7 @@ namespace TextRPG_TeamProject2nd.Manager
                     SceneStore();
                     break;
                 case SCENESTATE.INVEN:
-                    SceneStore();
+                    SceneInven();
                     break;
                 case SCENESTATE.QUEST:
                     SceneOuest();
@@ -73,27 +68,30 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneNone()
         {
             bool isComplete = false;
-            Player player = new Player();
-            int race = 0;
+            //player = new Player();
+            int raceid = 0;
+            string name = string.Empty;
             while(!isComplete)
             {
-                Console.WriteLine("[캐릭터를 생성합니다]");
-                Console.Write("이름을 입력하세요 : ");
-                string name = InputLine();
                 Console.Clear();
-                Console.WriteLine("[직업을 선택하세요]");
-                //List<Race> races = FileManager.GetRace();
-                Console.WriteLine("1.더미");//UI
+                Console.WriteLine("[캐릭터를 생성합니다]");
+                name = InputLine();
+                Console.Clear();
+                Console.WriteLine("[종족을 선택하세요]");           
+                Console.WriteLine("1.더미");
                 Console.WriteLine("2.더미");
                 Console.WriteLine("3.더미");
-                race = (InputKey() - 1);
+                Console.WriteLine("4.더미");
+                raceid = (InputKey());
+                Race temp = ObjectManager.Instance().GetRace(raceid);
 
-                Console.WriteLine($"이름:{name} 직업:{race}");
+                Console.WriteLine($"이름:{name} 종족:{temp.name}");
                 Console.WriteLine("[0]:확정 [1]:다시 작성");
                 if(InputKey() == 0) isComplete = true;
             }
 
-            player.SetPlayer(race);
+            
+            player.SetPlayer(raceid, name);
             player.Save();
             ChangeScene(SCENESTATE.VILLAGE);
         }
@@ -101,14 +99,12 @@ namespace TextRPG_TeamProject2nd.Manager
         {
             Console.Clear();
             Console.WriteLine("----------게임제목-----------");
-            Console.WriteLine("[0]:계속하기 [1]:종료");
+            Console.WriteLine("[0]:종료 [1]:새로 시작 [2]:불러오기");
             int input = InputKey();
-            if(input == 1) Environment.Exit(0);
-
-            if (player == null) { Console.WriteLine("로드오류"); return; }
-            player.Load();
-
-            ChangeScene(SCENESTATE.VILLAGE);
+            if (input == 0) { Environment.Exit(0); }
+            if (input == 1) { ChangeScene(SCENESTATE.NONE); return;}
+            if (input == 2) { player.Load(); ChangeScene(SCENESTATE.VILLAGE); }
+           
         }
         private void SceneVIllage()
         {
@@ -118,7 +114,7 @@ namespace TextRPG_TeamProject2nd.Manager
             int input = InputKey();
             if (input == 0) ChangeScene(SCENESTATE.STORE);
             else if (input == 1) ChangeScene(SCENESTATE.QUEST);
-            else if (input == 2) ChangeScene(SCENESTATE.STORE);
+            else if (input == 2) ChangeScene(SCENESTATE.INVEN);
             else if (input == 3) ChangeScene(SCENESTATE.FILED);
             else if (input == 4) { player.Save(); Environment.Exit(0); }
         }
@@ -148,8 +144,17 @@ namespace TextRPG_TeamProject2nd.Manager
 
             while(true)
             {
-                
-                break;
+                isTurn = true;
+                while (true) //플레이어
+                {
+
+                }
+
+                isTurn = false;
+                while (true) //몬스터
+                {
+
+                }
             }
         }
         private void SceneStore()
@@ -165,8 +170,25 @@ namespace TextRPG_TeamProject2nd.Manager
             Console.Clear();
             Console.WriteLine("아이템을 보관하고 장착하는 인벤토리 입니다.");
             Console.WriteLine("[0]:마을로이동");
+
+            Console.WriteLine("이름     : " + player.GetInfo().name);
+            Console.WriteLine("종족     : " + player.GetInfo().race);
+            Console.WriteLine("무기     : " + player.GetInfo().weaponId);
+            Console.WriteLine("방어구   : " + player.GetInfo().armorId);
+            Console.WriteLine("레벨     : " + player.GetInfo().level);
+            Console.WriteLine("체력     : " + player.GetInfo().hp +"/"+ player.GetInfo().maxHp);
+            Console.WriteLine("공격력   : " + player.GetInfo().attack);
+            Console.WriteLine("방어력   : " + player.GetInfo().defence);
+            Console.WriteLine("AP       : " + player.GetInfo().actionPoint);
+            Console.WriteLine("경험치   : " + player.GetInfo().exp +"/"+ player.GetInfo().maxExp);
+            Console.WriteLine("소지금   : " + player.GetInfo().money);
+
             int input = InputKey();
             if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
+
+            List<Item> temp = player.GetPlayerInvenList();
+            for (int i = 0; i < temp.Count; i++)
+                Console.WriteLine($"[{i}] " + temp[i].name);
         }
         private void SceneOuest()
         {
@@ -215,6 +237,7 @@ namespace TextRPG_TeamProject2nd.Manager
      
         public Player GetCurrentPlayer() { return player; }
         public List<Item> GetStoreList() { return storeList; }
+        public bool GetTurn() { return isTurn; }
         
         //사용자 입력
         public int InputKey()
@@ -248,6 +271,7 @@ namespace TextRPG_TeamProject2nd.Manager
         private Player? player = null;
         private SCENESTATE sceneState = SCENESTATE.MAIN;
         private List<Item>? storeList = null;
+        bool isTurn = false;
 
     }
 }

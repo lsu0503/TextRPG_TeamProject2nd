@@ -89,14 +89,15 @@ namespace TextRPG_TeamProject2nd.Manager
         {
             foreach (Race race in races)
             {
-                if (race.id == _id) { }
+                if (race.id == _id)
                     return race.Clone();
             }
 
             return null;
         }
         //------------------------------------------------------//
-
+        public List<Race> GetRaceList() { return races; }
+        public List<Map> GetMapList() { return maps; }
 
 
         //------------------------------------------------------//
