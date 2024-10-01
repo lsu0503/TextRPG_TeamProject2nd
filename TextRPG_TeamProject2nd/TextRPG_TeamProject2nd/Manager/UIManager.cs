@@ -77,22 +77,29 @@ namespace TeamProjectBin
             Console.WriteLine("[2] 보관함: 랫츠 보이드 오프너");
             Console.WriteLine("[3] 퀘스트: 도기독스 알선소");
             Console.WriteLine("[4] 던  전: 원정 고양이 협회");
-            Console.WriteLine("[0] 나가기: 양 한마리 여관");
+            Console.WriteLine("[0] 나가기: 세어가는 양 여관");
         }
 
         // 상점 관련 UI 함수.
         public void DisplayShopEntrance()
         {
+            Console.WriteLine("[하얀 토끼 점장]: 노동은 신성한 땀의 결정이지.");
+            Console.WriteLine("                  무엇을 찾으시오.\n");
+
             Console.WriteLine("[1] 구매하기");
             Console.WriteLine("[2] 판매하기");
             Console.WriteLine("[0] 나 가 기");
         }
 
+        /*
         // 상점 - 구매하기
         public void DisplayShopBuyList(int _page)
         {
             for (int i = 0 * _page; i < 9; i++)
             {
+                Console.WriteLine("[하얀 토끼 점장]: 지금 팔고 있는 물건은 이러하다오.");
+                Console.WriteLine("                  재고를 걱정할 필요는 없소. 노동이란 그 끝이 없음이니.\n");
+
                 if ((_page * 9) + i >= GameManager.Instance().storeList.Count)
                     break;
 
@@ -116,6 +123,7 @@ namespace TeamProjectBin
 
             Console.WriteLine("[0] 나가기");
         }
+        */
 
         // 구매 완료 시 표시.
         public void DisplayShoBuyText(Item _itemBought)
@@ -123,9 +131,13 @@ namespace TeamProjectBin
             Console.WriteLine($"{_itemBought.name}을 {_itemBought.value}에 구매하셨습니다.");
         }
 
+        /*
         // 상점 - 판매하기
         public void DisplayShopSellScreen(int _page)
         {
+            Console.WriteLine("[하얀 토끼 점장]: 오호. 노동의 결과는 항상 그 가치를 인정받아야 함이라오.");
+            Console.WriteLine("                  보여주시오. 원가는 아니더라도 값을 좀 쳐 주겠소.\n");
+
             for (int i = 0 * _page; i < 9; i++)
             {
                 if ((_page * 9) + i >= GameManager.Instance().storageList.Count)
@@ -150,6 +162,7 @@ namespace TeamProjectBin
 
             Console.WriteLine("[0] 나가기");
         }
+        */
 
         // 판매 완료 시 표시.
         public void DisplayShopSellText(Item _itemBought)
@@ -157,6 +170,21 @@ namespace TeamProjectBin
             Console.WriteLine($"{_itemBought.name}을 {(int)(_itemBought.value * 0.85f)}에 판매하셨습니다.");
         }
 
+        // 보관함[일시 보류]
+
+
+        // 퀘스트[일시 보류]
+
+
+        // 던전 진입 UI
+        public void DisplayDungeonList(int _page)
+        {
+            Console.WriteLine("[치즈 고양이 소년]: 어서와랴옹! 고양이들이 보증하는 던전 원정 협회댜옹!");
+            Console.WriteLine("                    지금 가지고 있는 정보는 여기 있댜옹. 어디를 들어갈거냐옹?");
+            Console.WriteLine("                    아, 들어가면 살아나오는 건 본인 책임이댜옹. 신중하게 결정하랴옹.\n");
+
+            // 던전 목록 출력. [일시 보류]
+        }
 
 
         public void PositionCursorToInput()
