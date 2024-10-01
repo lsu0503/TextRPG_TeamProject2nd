@@ -13,7 +13,11 @@ namespace TextRPG_TeamProject2nd.Manager
         }   
         public void Init()
         {
-            //items = FileManager.inst().GetItem()
+            items       = FileManager.Instance().GetItemFile();
+            maps        = FileManager.Instance().GetMapFile();
+            monsters    = FileManager.Instance().GetMonsterFile();
+            skills      = FileManager.Instance().GetSkillFile();
+            races       = FileManager.Instance().GetRaceFile();
         }
         //------------------------------------------------------//
         /// <summary>
@@ -40,7 +44,7 @@ namespace TextRPG_TeamProject2nd.Manager
         {
             foreach (Map map in maps)
             {
-                if (map.id == _id)
+                if (map.mapInfo.id == _id)
                     return map.Clone();
             }
 
@@ -55,7 +59,7 @@ namespace TextRPG_TeamProject2nd.Manager
         {
             foreach (Monster mob in monsters)
             {
-                if (mob.id == _id)
+                if (mob.GetInfo().id == _id)
                     return mob.Clone();
             }
 
@@ -81,12 +85,12 @@ namespace TextRPG_TeamProject2nd.Manager
         /// </summary>
         /// <param name="_id"></param>
         /// <returns></returns>
-        public Skill    GetRace(int _id)
+        public Race    GetRace(int _id)
         {
             foreach (Race race in races)
             {
                 if (race.id == _id) { }
-                    //return race.Clone();
+                    return race.Clone();
             }
 
             return null;

@@ -1,8 +1,5 @@
-﻿using TextRPG_TeamProject2nd.Utils;
-using TextRPG_TeamProject2nd.Manager;
-using TextRPG_TeamProject2nd.Object;
-using Microsoft.VisualBasic;
-using System.Numerics;
+﻿using TextRPG_TeamProject2nd.Manager;
+using TextRPG_TeamProject2nd.Utils;
 
 namespace TextRPG_TeamProject2nd.Object
 {
@@ -13,6 +10,7 @@ namespace TextRPG_TeamProject2nd.Object
         {
             skillList = new List<Skill>();
             playerInfo = new PlayerInfo();
+            inven = new List<Item>();
         }
         //-----------------
         /// <summary>
@@ -39,24 +37,99 @@ namespace TextRPG_TeamProject2nd.Object
             if (playerInfo != null)
                 playerInfo.hp = Math.Max(0, playerInfo.hp - damage);
         }
+
+        public void IncreaseLevel()
+        {
+            if (playerInfo == null)
+                return;
+
+            playerInfo.maxExp = 100 + playerInfo.level * 25;
+            //TODO : 플레이어가 레벨업 하면 상승하는 스탯
+            
+        }
+
+        public void PushInven(Item _item)
+        {
+            if (inven == null) return;
+            inven.Add(_item);
+        }
+
+        public int PopInven(int _index)
+        {
+            if (inven == null) return 0;
+            int value = inven[_index].value;
+            inven.RemoveAt(_index);
+            return value;
+
+        }
+
+        public void EQItem(Item _item)
+        {
+            switch (_item.type)
+            {
+                case ITEMTYPE.WEAPON:
+                    if (weapon != null) inven.Add(weapon);
+                    weapon = _item;
+                    break;
+                case ITEMTYPE.ARMOR:
+                    if (armor != null) inven.Add(armor);
+                    armor = _item;
+                    break;
+            }
+        }
+
+        public void DQItem(int index)
+        {
+            if (inven[index].type == ITEMTYPE.WEAPON)
+            {
+                inven.Add(weapon);
+                weapon = null;
+            }
+            else if(inven[index].type == ITEMTYPE.ARMOR)
+            {
+                inven.Add(armor);
+                armor = null;
+            }
+        }
+
+        public List<Item> GetPlayerInvenList() { return inven ?? new List<Item>(); }
+        public PlayerInfo GetInfo()
+        {
+            if(playerInfo != null)
+                return playerInfo;
+
+            return null;
+        }
         //-----------------
-        void CreatePlayer(PlayerInfo info)
+        public void SetPlayer(int _raceId)
         {
-            playerInfo = info;
-            //세이브()
+            Race race = ObjectManager.Instance().GetRace(_raceId);
+            if (race == null)
+                return;
 
+            playerInfo.level = 1;
+            playerInfo.hp = race.hp;
+            playerInfo.maxExp = race.hp;
+            playerInfo.attack = race.attack;
+            playerInfo.defence = race.defence;
+            playerInfo.actionPoint = race.actionPoint;
+            playerInfo.name = race.name;            
         }
-
-        void SavePlayer()
+        public void Save()
         {
-           
-           
+            FileManager.Instance().SavePlayer();
         }
-
-        void LoadPlayer()
+        public void Load()
         {
-            //로드
-           
+            if (!FileManager.Instance().LoadPlayer())
+                Console.WriteLine("저장 데이터가 없습니다.");
+
+            if (playerInfo == null)
+                return;
+
+            weapon = ObjectManager.Instance().GetItem(playerInfo.weaponId);
+            armor = ObjectManager.Instance().GetItem(playerInfo.armorId);
+            
         }
 
         //-----------------
@@ -70,5 +143,6 @@ namespace TextRPG_TeamProject2nd.Object
 
         //==
         public event UseSkillCallback? isAttack;
+        private List<Item>? inven = null;
     }
 }

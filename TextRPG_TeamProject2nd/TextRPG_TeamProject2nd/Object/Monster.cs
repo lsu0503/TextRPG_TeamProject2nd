@@ -19,7 +19,7 @@ namespace TextRPG_TeamProject2nd.Object
                 return;
 
             Random random = new Random();
-            int range = mobInfo.skillList.Length;
+            int range = mobInfo.skillList.Count;
             int index = random.Next(0, range);
      
             isAttack?.Invoke(skillList[index].power + mobInfo.attack);           
@@ -38,6 +38,11 @@ namespace TextRPG_TeamProject2nd.Object
             Monster ret = new Monster();
             ret.mobInfo = mobInfo;
             return ret;
+        }
+
+        public MobInfo GetInfo()
+        {
+            return mobInfo;
         }
         //--------------------------------------
        

@@ -7,9 +7,9 @@ namespace TextRPG_TeamProject2nd
         static void Main(string[] args)
         {
             //Init()
-            //FileManger.Instance().Init();
-            GameManager.Instance().Init();
+            FileManager.Instance().Init();
             ObjectManager.Instance().Init();
+            GameManager.Instance().Init();
 
             //Update()
             while (true)

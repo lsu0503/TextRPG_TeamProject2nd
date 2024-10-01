@@ -13,13 +13,6 @@ namespace TextRPG_TeamProject2nd.Manager
         QUEST,
         END,
     }
-    enum RACETYPE
-    {
-        KNIGHT,
-        ARCHUR,
-        MAGE,
-    }
-
     internal class GameManager
     {
         
@@ -33,9 +26,14 @@ namespace TextRPG_TeamProject2nd.Manager
         }
         public void Init()
         {
-            //TODO
-            //파일 매니저에서 플레이어 정보를 로드해서 적재 해야합니다.
-            //player = FileManger.Inst().Load();
+            if(!FileManager.Instance().LoadPlayer())
+            {
+                ChangeScene(SCENESTATE.NONE);
+            }
+
+            player = new Player();
+            storeList = new List<Item>();
+            InitStore();
         }
         //---------------------------------------------------------------
         public void Update()
@@ -75,49 +73,42 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneNone()
         {
             bool isComplete = false;
+            Player player = new Player();
+            int race = 0;
             while(!isComplete)
             {
-                Console.WriteLine("이름을 입력하세요.");
+                Console.WriteLine("[캐릭터를 생성합니다]");
+                Console.Write("이름을 입력하세요 : ");
                 string name = InputLine();
                 Console.Clear();
-                Console.WriteLine("직업을 선택하세요.");
+                Console.WriteLine("[직업을 선택하세요]");
                 //List<Race> races = FileManager.GetRace();
-                Console.WriteLine("1.기사");
-                Console.WriteLine("2.궁수");
-                Console.WriteLine("3.마법사");
-                RACETYPE type = (RACETYPE)(InputKey() - 1);
-                Console.Clear();
+                Console.WriteLine("1.더미");//UI
+                Console.WriteLine("2.더미");
+                Console.WriteLine("3.더미");
+                race = (InputKey() - 1);
 
-                switch (type)
-                {
-                    case RACETYPE.KNIGHT:
-                        //TODO
-                        break;
-                    case RACETYPE.ARCHUR:
-                        //TODO
-                        break;
-                    case RACETYPE.MAGE:
-                        //TODO
-                        break;
-                }
-
-                Console.WriteLine("당신의 이름은 {0}, 직업은 {1}입니다.", name, type);
-                Console.WriteLine("[0]:확정 [1]:초기화");
-                isComplete = InputKey() == 0 ? true : false;
-                Console.Clear();
+                Console.WriteLine($"이름:{name} 직업:{race}");
+                Console.WriteLine("[0]:확정 [1]:다시 작성");
+                if(InputKey() == 0) isComplete = true;
             }
 
+            player.SetPlayer(race);
+            player.Save();
             ChangeScene(SCENESTATE.VILLAGE);
         }
         private void SceneMain()
         {
             Console.Clear();
-            Console.WriteLine("더미 메인화면 입니다.");
-            Console.WriteLine("[0]:시작 [1]:종료");
+            Console.WriteLine("----------게임제목-----------");
+            Console.WriteLine("[0]:계속하기 [1]:종료");
             int input = InputKey();
-            if(input == 0)
-                ChangeScene(SCENESTATE.VILLAGE);
-            else Environment.Exit(0);
+            if(input == 1) Environment.Exit(0);
+
+            if (player == null) { Console.WriteLine("로드오류"); return; }
+            player.Load();
+
+            ChangeScene(SCENESTATE.VILLAGE);
         }
         private void SceneVIllage()
         {
@@ -125,19 +116,35 @@ namespace TextRPG_TeamProject2nd.Manager
             Console.WriteLine("마을입니다.");
             Console.WriteLine("[0]:상점 [1]:퀘스트 [2]:보관함 [3]:던 전 [4]:저장 및 종료");
             int input = InputKey();
-            if (input == 0)         ChangeScene(SCENESTATE.STORE);
-            else if (input == 1)    ChangeScene(SCENESTATE.QUEST);
-            else if (input == 2)    ChangeScene(SCENESTATE.STORE);
-            else if (input == 3)    ChangeScene(SCENESTATE.FILED);
-            else if (input == 4)    Environment.Exit(0); //SAVE
+            if (input == 0) ChangeScene(SCENESTATE.STORE);
+            else if (input == 1) ChangeScene(SCENESTATE.QUEST);
+            else if (input == 2) ChangeScene(SCENESTATE.STORE);
+            else if (input == 3) ChangeScene(SCENESTATE.FILED);
+            else if (input == 4) { player.Save(); Environment.Exit(0); }
         }
         private void SceneFiled()
         {
             Console.Clear();
             Console.WriteLine("던전을 고르세요!");
-            Console.WriteLine("[0]:마을로이동 [1]:더미던전");
+            Console.WriteLine("[0]:마을로이동 [번호]:해당 던전");
             int input = InputKey();
+            int maxId = 0; // TODO
             if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
+            for(int i = 0; i < maxId; i++)
+            {
+                Console.WriteLine($"{i}." + ObjectManager.Instance().GetMap(i).mapInfo.name);
+            }
+
+            Random random = new Random();
+            Map map = ObjectManager.Instance().GetMap(input);
+            List<int> ids = map.mapInfo.mobId;
+            List<Monster> currentMobs = new List<Monster>(); 
+
+            int seed    = random.Next(0, ids.Count);
+            int count   = random.Next(3, 6);
+            int floor   = 0;
+            for (int i = 0; i < count; i++)
+                currentMobs.Add(ObjectManager.Instance().GetMonster(ids[seed]));
 
             while(true)
             {
@@ -175,7 +182,39 @@ namespace TextRPG_TeamProject2nd.Manager
         {
             sceneState = type;
         }
+        private void InitStore()
+        {
+            for(int i = 1000; i < 1500; i++)
+            {
+               storeList.Add(ObjectManager.Instance().GetItem(i));
+            }
+        }
+        private bool BuyItem(int index)
+        {
+            if (player == null || storeList == null) return false;
+
+            int money = player.GetInfo().money;
+            int price = storeList[index].value;
+            if (money < price) return false;
+            
+            player.PushInven(storeList[index]);
+            storeList.RemoveAt(index);
+            return true;
+        }
+        private bool Sellitem(int index)
+        {
+            if (player == null || storeList == null) return false;
+
+            Item item = player.GetPlayerInvenList()[index];
+            if (item == null) return false;
+
+            player.GetInfo().money += (item.value / 2);
+            player.GetPlayerInvenList().RemoveAt(index);
+            return true;
+        }
+     
         public Player GetCurrentPlayer() { return player; }
+        public List<Item> GetStoreList() { return storeList; }
         
         //사용자 입력
         public int InputKey()
@@ -208,6 +247,7 @@ namespace TextRPG_TeamProject2nd.Manager
         static GameManager? instance;
         private Player? player = null;
         private SCENESTATE sceneState = SCENESTATE.MAIN;
+        private List<Item>? storeList = null;
 
     }
 }
