@@ -70,6 +70,11 @@ namespace TeamProjectBin
             Console.WriteLine("[0] 게임 종료");
         }
 
+        public void DisplayFailedLoad()
+        {
+            Console.WriteLine("세이브파일이 없습니다.");
+        }
+
         // 캐릭터 생성 관련 UI
         public void DisplayCreateChracter()
         {
@@ -88,12 +93,6 @@ namespace TeamProjectBin
 
         // 종족 선택 화면 [일시 보류: ObjectManager에 races를 받아오는 함수 필요.]
 
-
-        // 세이브 슬롯 확인 함수.
-        public void DisplaySaveSlot()
-        {
-            // 세이브 시스템 제작 이후 작성하자.
-        }
 
         // 마을 화면 관련 UI 함수
         public void DisplayVillageMenu()
