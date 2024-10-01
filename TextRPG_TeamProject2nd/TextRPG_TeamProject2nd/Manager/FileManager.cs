@@ -29,11 +29,10 @@ namespace TextRPG_TeamProject2nd.Manager
 
             GetFileToList("Item.csv", FILETYPE.ITEM);
             GetFileToList("Map.csv", FILETYPE.MAP);
-            GetFileToList("Monster.csv", FILETYPE.MONSTER);
+            GetFileToList("Mob.csv", FILETYPE.MONSTER);
             GetFileToList("Race.csv", FILETYPE.RACE);
             GetFileToList("Skill.csv", FILETYPE.SKILL);        
         }
-
         public void SavePlayer()
         {
             StreamWriter streamWriter = new StreamWriter(path + "\\SAVE.spam");
@@ -53,6 +52,11 @@ namespace TextRPG_TeamProject2nd.Manager
                 outData += info.attack + ",";
                 outData += info.defence + ",";
                 outData += info.actionPoint + ",";
+                outData += info.exp + ",";
+                outData += info.maxExp + ",";
+                outData += info.money + ",";
+                outData += info.race + ",";
+
             }
           
             streamWriter.WriteLine(outData);
@@ -80,6 +84,11 @@ namespace TextRPG_TeamProject2nd.Manager
             player.GetInfo().attack = int.Parse(inData[6]);
             player.GetInfo().defence = int.Parse(inData[7]);
             player.GetInfo().actionPoint = int.Parse(inData[8]);
+            player.GetInfo().exp = int.Parse(inData[9]);
+            player.GetInfo().maxExp = int.Parse(inData[10]);
+            player.GetInfo().money = int.Parse(inData[11]);
+            player.GetInfo().race = inData[12];
+
             return true;      
         }
         void GetFileToList(string _fileName, FILETYPE _type)
@@ -90,12 +99,12 @@ namespace TextRPG_TeamProject2nd.Manager
             string line = string.Empty;
             while((line = reader.ReadLine()) != null)
             {
-                if (isFirst)
-                {
-                    isFirst = false; 
-                    continue;
-                }
-                    //--
+                if (isFirst)            // 잠자리~
+                {                     //
+                    isFirst = false;// 
+                    continue;    //
+                }              //
+                    //--//--o y o --// --//
                     string[] temp = line.Split(',');
                 switch (type)
                 {            
@@ -122,7 +131,7 @@ namespace TextRPG_TeamProject2nd.Manager
                             map.mapInfo.levelLimit = int.Parse(temp[1]);
                             map.mapInfo.floor = int.Parse(temp[2]);
                             map.mapInfo.mobId = StringToIndex(temp[3]);
-                            map.mapInfo.mobId = StringToIndex(temp[4]);
+                            map.mapInfo.bossId = StringToIndex(temp[4]);
                             map.mapInfo.name = temp[5];
                             map.mapInfo.desc = temp[6];
                             //TODO
@@ -177,6 +186,7 @@ namespace TextRPG_TeamProject2nd.Manager
         }//CORE //파일매니저 핵심 기능 함수입니다.
         List<int> StringToIndex(string str)
         {
+            if(str == "") return new List<int> {-1};
             string[] strings = str.Split('|');
             List<int> ret = new List<int>();
             foreach (string s in strings)

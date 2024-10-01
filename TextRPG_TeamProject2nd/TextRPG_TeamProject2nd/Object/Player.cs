@@ -8,9 +8,7 @@ namespace TextRPG_TeamProject2nd.Object
     {
         public void Init()
         {
-            skillList = new List<Skill>();
-            playerInfo = new PlayerInfo();
-            inven = new List<Item>();
+            
         }
         //-----------------
         /// <summary>
@@ -43,7 +41,7 @@ namespace TextRPG_TeamProject2nd.Object
             if (playerInfo == null)
                 return;
 
-            playerInfo.maxExp = 100 + playerInfo.level * 25;
+            playerInfo.maxExp = baseMaxExp + playerInfo.level * 25;
             //TODO : 플레이어가 레벨업 하면 상승하는 스탯
             
         }
@@ -101,19 +99,22 @@ namespace TextRPG_TeamProject2nd.Object
             return null;
         }
         //-----------------
-        public void SetPlayer(int _raceId)
+        public void SetPlayer(int _raceId, string name)
         {
             Race race = ObjectManager.Instance().GetRace(_raceId);
             if (race == null)
                 return;
 
             playerInfo.level = 1;
+            playerInfo.maxExp = baseMaxExp;
             playerInfo.hp = race.hp;
-            playerInfo.maxExp = race.hp;
+            playerInfo.maxHp = race.hp;
             playerInfo.attack = race.attack;
             playerInfo.defence = race.defence;
             playerInfo.actionPoint = race.actionPoint;
-            playerInfo.name = race.name;            
+            playerInfo.race = race.name;
+            playerInfo.name = name;
+            playerInfo.money = 1000;
         }
         public void Save()
         {
@@ -136,13 +137,15 @@ namespace TextRPG_TeamProject2nd.Object
 
         //-----------------
 
-        PlayerInfo? playerInfo;
-        List<Skill>? skillList;
+        PlayerInfo? playerInfo = new PlayerInfo();
+        List<Skill>? skillList = new List<Skill>();
         Item? weapon = null;
         Item? armor = null;
 
+        int baseMaxExp = 100;
+
         //==
         public event UseSkillCallback? isAttack;
-        private List<Item>? inven = null;
+        private List<Item>? inven = new List<Item>();
     }
 }

@@ -12,6 +12,6 @@ namespace TextRPG_TeamProject2nd.Object
             return ret;
         }
         
-        public MapInfo mapInfo;
+        public MapInfo mapInfo = new MapInfo();
     }
 }
