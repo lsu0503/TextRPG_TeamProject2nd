@@ -13,7 +13,7 @@ namespace TextRPG_TeamProject2nd.Manager
         }   
         public void Init()
         {
-            
+            //items = FileManager.inst().GetItem()
         }
         //------------------------------------------------------//
         /// <summary>

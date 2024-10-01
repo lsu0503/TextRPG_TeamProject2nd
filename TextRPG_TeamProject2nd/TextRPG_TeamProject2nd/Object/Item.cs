@@ -23,7 +23,6 @@ namespace TextRPG_TeamProject2nd.Object
             ret.id          = id;
             ret.attack      = attack;
             ret.defence     = defence;
-            ret.actionPoint = actionPoint;
             ret.name        = name;
             ret.skill       = skill;
             ret.type        = type;
@@ -34,7 +33,6 @@ namespace TextRPG_TeamProject2nd.Object
         public int id           { get; set; }
         public int attack       { get; set; }
         public int defence      { get; set; }
-        public int actionPoint  { get; set; }
         public int value        { get; set; }
         public int amount       { get; set; }
         public string desc      { get; set; }
