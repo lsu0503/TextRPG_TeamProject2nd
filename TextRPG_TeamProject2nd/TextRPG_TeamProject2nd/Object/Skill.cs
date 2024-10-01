@@ -5,7 +5,6 @@ namespace TextRPG_TeamProject2nd.Object
     enum SKILLTYPE
     {
         ATTACK,
-        ASSIST,
         HEAL
     }
 
