@@ -70,11 +70,20 @@ namespace TeamProjectBin
             Console.WriteLine("[0] 게임 종료");
         }
 
-        // 캐릭터 생성 관련 UI [잠시 보류]
-        // 이름 입력 화면
-        public void DisplayNameScreen()
+        // 캐릭터 생성 관련 UI
+        public void DisplayCreateChracter()
         {
-            Console.WriteLine("이름을 입력 해 주십시오.");
+            Console.WriteLine("당신은 반짝거리는 태양 아래 서 있습니다.");
+            Console.WriteLine("바로 앞에는 웅장한 모험가 협회가 기다리고 있구요.");
+            Console.WriteLine("이윽고 모험자로의 첫 말을 내딪으면...!\n");
+            Console.WriteLine("[꽃사슴 접수원]: 접수 서류 부터 작성하시고, 저-기 창구로 제출하세요.");
+            Console.WriteLine("\n... 일단은 첫발을 내딪었다!");
+        }
+
+        // 이름 입력 화면
+        public void DisplayCreateCharacterName()
+        {
+            Console.WriteLine("\n이름을 입력 해 주십시오.");
         }
 
         // 종족 선택 화면 [일시 보류: ObjectManager에 races를 받아오는 함수 필요.]
