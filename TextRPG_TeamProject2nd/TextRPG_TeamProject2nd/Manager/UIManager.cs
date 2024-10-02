@@ -29,22 +29,22 @@ namespace TeamProjectBin
         }
 
         // 우측 플레이어 정보를 그리는 함수.
-        static void DisplayPlayerInfoRight(Player _player)
+        static void DisplayPlayerInfoVillage(Player _player)
         {
-            PlayerInfo playerinfo = _player.GetInfo();
+            PlayerInfo playerInfo = _player.GetInfo();
             List<string> tempStringList = new List<string>();
             int windowWidth = Console.WindowWidth;
             int wordLengthByte;
             int xPos = 0;
 
-            tempStringList.Add(String.Format(playerinfo.name + $"     Lv.{playerinfo.level}" + $"[{playerinfo.exp / (float)playerinfo.maxExp: 2N, 5}]"));
-            tempStringList.Add(String.Format($"HP: {playerinfo.hp, 4} / {playerinfo.maxHp, -4}"));
-            tempStringList.Add(String.Format($"공격력: {playerinfo.attack, -3}"));
-            tempStringList.Add(String.Format($"방어력: {playerinfo.defence, -3}"));
-            tempStringList.Add(String.Format($"행동력: {playerinfo.actionPoint, -3}"));
+            tempStringList.Add(String.Format(playerInfo.name + $"     Lv.{playerInfo.level}" + $"[{playerInfo.exp / (float)playerInfo.maxExp: 2N, 5}]"));
+            tempStringList.Add(String.Format($"HP: {playerInfo.hp,4} / {playerInfo.maxHp,-4}"));
+            tempStringList.Add(String.Format($"공격력: {playerInfo.attack,-3}"));
+            tempStringList.Add(String.Format($"방어력: {playerInfo.defence,-3}"));
+            tempStringList.Add(String.Format($"행동력: {playerInfo.actionPoint,-3}"));
             tempStringList.Add("");
-            tempStringList.Add($"무  기: {ObjectManager.Instance().GetItem(playerinfo.weaponId).name}");
-            tempStringList.Add($"방어구: {ObjectManager.Instance().GetItem(playerinfo.armorId).name}");
+            tempStringList.Add($"무  기: {ObjectManager.Instance().GetItem(playerInfo.weaponId).name}");
+            tempStringList.Add($"방어구: {ObjectManager.Instance().GetItem(playerInfo.armorId).name}");
 
             for (int i = 0; i < tempStringList.Count; i++)
             {
@@ -91,8 +91,41 @@ namespace TeamProjectBin
             Console.WriteLine("\n이름을 입력 해 주십시오.");
         }
 
-        // 종족 선택 화면 [일시 보류: ObjectManager에 races를 받아오는 함수 필요.]
+        // 종족 선택 화면
+        public void DisplayCreateCharacterRace(int _page)
+        {
+            List<Race> raceList = ObjectManager.Instance().GetRaceList();
 
+            Console.WriteLine("\n종족을 기입 해 주십시오.\n");
+
+            for (int i = 0 * _page; i < 5; i++)
+            {
+                if ((_page * 5) + i >= raceList.Count)
+                    break;
+
+                Console.Write($"[{i + 1}] {raceList[(_page * 9) + i].name}");
+                Console.CursorLeft = 25;
+                Console.WriteLine($"| {raceList[(_page * 9) + i].desc}");
+                Console.CursorLeft = 25;
+                Console.WriteLine($"| HP: {raceList[(_page * 9) + i].hp, -5}   공격력: {raceList[(_page * 9) + i].attack, -3}" +
+                                  $"   방어력: {raceList[(_page * 9) + i].defence, -3}   행동력: {raceList[(_page * 9) + i].actionPoint}");
+                Console.WriteLine();
+            }
+
+            if (_page > 0)
+                Console.Write($"[-] 이전         ");
+            else
+                Console.Write($"                 ");
+
+            Console.Write($"[ {_page} ]");
+
+            if ((_page + 1) * 5 < raceList.Count)
+                Console.WriteLine($"         다음 [+]");
+            else
+                Console.WriteLine();
+
+            Console.WriteLine("[0] 나가기");
+        }
 
         // 마을 화면 관련 UI 함수
         public void DisplayVillageMenu()
@@ -234,11 +267,36 @@ namespace TeamProjectBin
         // 던전 진입 UI
         public void DisplayDungeonList(int _page)
         {
+            List<Map> mapList = ObjectManager.Instance().GetMapList();
+
             Console.WriteLine("[치즈 고양이 소년]: 어서와랴옹! 고양이들이 보증하는 던전 원정 협회댜옹!");
             Console.WriteLine("                    지금 가지고 있는 정보는 여기 있댜옹. 어디를 들어갈거냐옹?");
             Console.WriteLine("                    아, 들어가면 살아나오는 건 본인 책임이댜옹. 신중하게 결정하랴옹.\n");
 
-            // 던전 목록 출력. [일시 보류 - Object Manager에 Maps를 받아오는 함수 필요.]
+            // 던전 목록 출력.
+            for (int i = 0 * _page; i < 9; i++)
+            {
+                if ((_page * 9) + i >= mapList.Count)
+                    break;
+
+                Console.Write($"[{i + 1}] {mapList[(_page * 9) + i].mapInfo.name} [Lv.{mapList[(_page * 9) + i].mapInfo.levelLimit} / 전투: {mapList[(_page * 9) + i].mapInfo.floor}]");
+                Console.CursorLeft = 40;
+                Console.WriteLine($"| {mapList[(_page * 9) + i].mapInfo.desc}");
+            }
+
+            if (_page > 0)
+                Console.Write($"[-] 이전         ");
+            else
+                Console.Write($"                 ");
+
+            Console.Write($"[ {_page} ]");
+
+            if ((_page + 1) * 9 < mapList.Count)
+                Console.WriteLine($"         다음 [+]");
+            else
+                Console.WriteLine();
+
+            Console.WriteLine("[0] 나가기");
         }
 
         //게임 종료 관련 UI(마을에서)
@@ -256,12 +314,89 @@ namespace TeamProjectBin
         
         /* 던전 내부 관련 UI */
         // 플레이어 정보 출력 함수
-        
-        // 적 정보 출력 함수
+        public void DisplayPlayerInfoDungeon(Player _player)
+        {
+            PlayerInfo playerInfo = _player.GetInfo();
+            int logFrameBottom = Console.WindowHeight - 3;
+            int logFrameRight = Console.WindowWidth - 1;
+            List<string> tempStringList = new List<string>();
 
-        // 현재 턴 정보 출력 함수
+            tempStringList.Add(String.Format(playerInfo.name + $"     Lv.{playerInfo.level}" + $"[{playerInfo.exp / (float)playerInfo.maxExp: 2N, 5}]"));
+            tempStringList.Add(String.Format($"HP {playerInfo.hp,4} / {playerInfo.maxHp,-4}   AP {playerInfo.actionPoint, 2}")); // AP가 플레이어에 없어, 임시로 PlayerInfo의 값을 넣음.
+            tempStringList.Add(String.Format($"공격력: {playerInfo.attack,-3}"));
+            tempStringList.Add(String.Format($"방어력: {playerInfo.defence,-3}"));
+            tempStringList.Add(String.Format($"행동력: {playerInfo.actionPoint,-3}"));
+            tempStringList.Add(String.Format(""));
+
+            Item playerWeapon = ObjectManager.Instance().GetItem(playerInfo.weaponId);
+            for (int i = 0; i < playerWeapon.skill.Count; i++)
+            {
+                Skill targetSkill = ObjectManager.Instance().GetSkill(playerWeapon.skill[i]);
+                tempStringList.Add(String.Format($"{$"[{i + 1}]{targetSkill.name}[AP {targetSkill.cost}]", -40}"));
+            }
+            // 스킬 관련 요소가 미완이라서 일단 무기 스킬 만 넣음.
+
+            for(int i = tempStringList.Count-1; i>= 0; i--)
+            {
+                // UTF-8일 경우 한글은 한 자에 3Byte로 구성된다. 이를 참고하여 수식을 구성했다.
+                // [p.s. 본 프로젝트와는 관계 없지만, euc-kr일 경우에는 한글은 한 자에 2Byte로 구성된다.]
+                int wordLengthByte = Encoding.Default.GetByteCount(tempStringList[i]);
+                Console.SetCursorPosition(logFrameRight - (((wordLengthByte - tempStringList[i].Length) / 2) + tempStringList[i].Length + 1), logFrameBottom - i);
+            }
+        }
 
         // 던전 정보 출력 함수
+        public void DisplayDungeonInfo(Map _map, int _floor)
+        {
+            int frameLeft = Console.WindowWidth - 40;
+            Console.SetCursorPosition(frameLeft, 0);
+            Console.Write($"{_map.mapInfo.name}");
+            
+            Console.SetCursorPosition(frameLeft, 1);
+            Console.Write($"[{_floor} / {_map.mapInfo.floor}]");
+        }
+
+        // 적 정보 출력 함수
+        public void DisplayEnemyInfo(Monster _monster)
+        {
+            int frameTop = 5;
+            int frameLeft = Console.WindowWidth - 40;
+
+            Console.SetCursorPosition(frameLeft, frameTop);
+            Console.Write($"{_monster.GetInfo().name} [{_monster.GetInfo().level}]");
+
+            Console.SetCursorPosition(frameLeft, frameTop + 1);
+            Console.Write($"HP {_monster.GetInfo().hp,  4} / {_monster.GetInfo().maxHp, -4}");
+        }
+
+        // 현재 턴 정보 출력 함수
+        public void DisplayCurrntTurn(bool _isPlayerTurn)
+        {
+            int playerInfoTop = 8;
+            int monsterInfoBottom = 6;
+            int frameHeight = Console.WindowHeight - 3;
+            int turnInfoMiddle = ((frameHeight - playerInfoTop - monsterInfoBottom) / 2) + monsterInfoBottom;
+
+            int frameRight = Console.WindowWidth - 1;
+
+            Console.SetCursorPosition(frameRight - 26, turnInfoMiddle);
+            Console.Write("Current Turn");
+
+            if (_isPlayerTurn)
+            {
+                Console.SetCursorPosition(frameRight - 28, turnInfoMiddle + 1);
+                Console.Write("↓ Now Your Turn");
+            }
+
+            else
+            {
+                Console.SetCursorPosition(frameRight - 30, turnInfoMiddle - 1);
+                Console.Write("↑ Now Enemy's Turn");
+
+                Console.SetCursorPosition(frameRight - 34, turnInfoMiddle + 1);
+                Console.Write("Press Any Button to Progress");
+            }
+        }
 
         // 로그 출력 함수
         public void DisplayLog()
