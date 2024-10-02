@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using TextRPG_TeamProject2nd.Manager;
 using TextRPG_TeamProject2nd.Utils;
 
@@ -146,6 +147,8 @@ namespace TextRPG_TeamProject2nd.Object
             playerInfo.race = race.name;
             playerInfo.name = name;
             playerInfo.money = 1000;
+            //quest.questId = ;
+            //quest.questProgressAmount = ;
         }
         public void Save()
         {
@@ -161,22 +164,60 @@ namespace TextRPG_TeamProject2nd.Object
 
             weapon = ObjectManager.Instance().GetItem(playerInfo.weaponId);
             armor = ObjectManager.Instance().GetItem(playerInfo.armorId);
-            
+            quest = ObjectManager.Instance().GetQuest(playerInfo.questId);
+
+            quest.questProgressAmount = playerInfo.questProgress;
+        }
+
+        public Quest GetCurrentQuest()
+        {
+            return quest;
+        }
+
+        void SaveInven()
+        {
+            StreamWriter streamWriter = new StreamWriter(path + "\\INVEN.spam");
+
+            string outData = string.Empty;
+            foreach (Item item in inven)
+            {
+                outData += item.id + ",";
+            }
+
+            streamWriter.WriteLine(outData);
+            streamWriter.Close();
+        }
+
+        void LoadInven()
+        {
+            StreamReader reader = new StreamReader(path + "\\INVEN.spam");
+            string outData = reader.ReadToEnd();
+            string[] inData = outData.Split(",");
+
+            foreach(string data in inData)
+            {
+                Item item = ObjectManager.Instance().GetItem(int.Parse(data));
+                inven.Add(item);
+            }
         }
 
         //-----------------
 
         //-----------------
-
+        string path = Path.Combine(Directory.GetCurrentDirectory(), "Team25");
         PlayerInfo? playerInfo = new PlayerInfo();
         List<Skill>? skillList = new List<Skill>();
         Item? weapon = null;
         Item? armor = null;
+        Quest? currentQuestId = null;
+        Quest? currentQuestProgressAmount = null;
 
         int baseMaxExp = 100;
 
         //==
         public event UseSkillCallback? isAttack;
         private List<Item>? inven = new List<Item>();
+        private Quest quest = new Quest();
+
     }
 }

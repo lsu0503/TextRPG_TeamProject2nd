@@ -21,6 +21,8 @@ namespace TextRPG_TeamProject2nd.Utils
         public int exp         { get; set; }
         public int maxExp      { get; set; }
         public int money       { get; set; }
+        public int questId { get; set; }
+        public int questProgress { get; set; }
 
     }
 
