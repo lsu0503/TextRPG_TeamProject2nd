@@ -305,7 +305,8 @@ namespace TeamProjectBin
             Console.WriteLine("[뜨개질 중인 양 할머니]: 양 세는 여관에 어서오거라. 오늘도 수고 많았다.");
             Console.WriteLine("                         마음 높고 푹 쉬려무나. 숙박비는 걱정 말고. 다른 곳에서 지원이 들어온단다.");
             Console.WriteLine("                         가끔 기한 없이 잠들기도 하지만, 모두들 마음에 쏙 들어한단다.");
-            Console.WriteLine("                         뭐, 이전에 있었던 일이다만, 엄청 커다란 날치에 관한 이야기인데...");
+            Console.WriteLine("                         우리 침구에 쓰이는 건 우리 수면양족의 털이거든. 이게 주기적으로 안깎아내면 무거워서...");
+            Console.WriteLine("");
             Console.WriteLine("<말이 끝날 기미가 안보인다. 빨리 용무를 마쳐야 할 거 같다.>\n");
 
             Console.WriteLine();
