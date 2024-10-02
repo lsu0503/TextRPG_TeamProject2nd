@@ -1,11 +1,12 @@
 using TextRPG_TeamProject2nd.Manager;
+using TextRPG_TeamProject2nd.Object;
 using TextRPG_TeamProject2nd.Utils;
 
 namespace TextRPG_TeamProject2nd.Quest
 {
     internal class Quest: IClone<Quest>
     {
-        public Quest clone()
+        public Quest Clone()
         {
             Quest ret = new Quest();
 
@@ -23,7 +24,7 @@ namespace TextRPG_TeamProject2nd.Quest
 
         public void ProgressQuest(Monster defeatedMonster)
         {
-            MobInfo mobInfo = defeatedMonster.GetMobInfo();
+            MobInfo mobInfo = defeatedMonster.GetInfo();
 
             if(questTargetId == mobInfo.id)
             {
@@ -42,7 +43,7 @@ namespace TextRPG_TeamProject2nd.Quest
 
         public int questId                { get; set; }
         public string questName           { get; set; }
-        public string qeustDesc           { get; set; } //퀘스트 내용 설명
+        public string questDesc           { get; set; } //퀘스트 내용 설명
         public int questTargetId          { get; set; } //목표 몬스터
         public int questTargetAmount      { get; set; } //퀘스트 목표치
         public int questProgressAmount    { get; set; } //현재 퀘스트 달성치
