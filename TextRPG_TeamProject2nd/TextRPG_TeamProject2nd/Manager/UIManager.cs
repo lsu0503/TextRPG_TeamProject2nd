@@ -156,35 +156,21 @@ namespace TeamProjectBin
         }
 
         // 상점 - 구매하기
-        public void DisplayShopBuyList(int _page)
+        public void DisplayShopBuyList()
         {
             List<Item> storeList = GameManager.Instance().GetStoreList();
 
-            for (int i = 0 * _page; i < 9; i++)
+            for (int i = 0; i < storeList.Count; i++)
             {
                 Console.WriteLine("[하얀 토끼 점장]: 지금 팔고 있는 물건은 이러하다오.");
                 Console.WriteLine("                  재고를 걱정할 필요는 없소. 노동이란 그 끝이 없음이니.\n");
 
-                if ((_page * 9) + i >= storeList.Count)
-                    break;
-
-                Console.Write($"[{i + 1}] {storeList[(_page * 9) + i].name} <{storeList[(_page * 9) + i].value}#>");
+                Console.Write($"[{i + 1}] {storeList[i].name} <{storeList[i].value}#>");
                 Console.CursorLeft = 35;
-                Console.WriteLine($"| {storeList[(_page * 9) + i].desc}");
+                Console.WriteLine($"| {storeList[i].desc}");
             }
-
-
-            if (_page > 0)
-                Console.Write($"[-] 이전         ");
-            else
-                Console.Write($"                 ");
-
-            Console.Write($"[ {_page} ]");
-
-            if ((_page + 1) * 9 < storeList.Count)
-                Console.WriteLine($"         다음 [+]");
-            else
-                Console.WriteLine();
+            
+            Console.WriteLine();
 
             Console.WriteLine("[0] 나가기");
         }
@@ -196,34 +182,21 @@ namespace TeamProjectBin
         }
 
         // 상점 - 판매하기
-        public void DisplayShopSellScreen(Player _player, int _page)
+        public void DisplayShopSellScreen(Player _player)
         {
             List<Item> invenList = _player.GetPlayerInvenList();
 
             Console.WriteLine("[하얀 토끼 점장]: 호오. 노동의 결과는 항상 그 가치를 인정받아야 함이라오.");
             Console.WriteLine("                  보여주시오. 원가 까지는 아니더라도 값을 좀 쳐 주겠소.\n");
 
-            for (int i = 0 * _page; i < 9; i++)
+            for (int i = 0; i < invenList.Count; i++)
             {
-                if ((_page * 9) + i >= invenList.Count)
-                    break;
-
-                Console.Write($"[{i + 1}] {invenList[(_page * 9) + i].name} <{invenList[(_page * 9) + i].value}#>");
+                Console.Write($"[{i + 1}] {invenList[i].name} <{invenList[i].value}#>");
                 Console.CursorLeft = 35;
-                Console.WriteLine($"| {invenList[(_page * 9) + i].desc}");
+                Console.WriteLine($"| {invenList[i].desc}");
             }
 
-            if (_page > 0)
-                Console.Write($"[-] 이전         ");
-            else
-                Console.Write($"                 ");
-
-            Console.Write($"[ {_page} ]");
-
-            if ((_page + 1) * 9 < invenList.Count)
-                Console.WriteLine($"         다음 [+]");
-            else
-                Console.WriteLine();
+            Console.WriteLine();
 
             Console.WriteLine("[0] 나가기");
         }
