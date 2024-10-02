@@ -11,7 +11,8 @@ namespace TextRPG_TeamProject2nd.Manager
         MAP,
         MONSTER,
         RACE,
-        SKILL,        
+        SKILL, 
+        QUEST,
     }
     internal class FileManager
     {
@@ -32,6 +33,7 @@ namespace TextRPG_TeamProject2nd.Manager
             GetFileToList("Mob.csv", FILETYPE.MONSTER);
             GetFileToList("Race.csv", FILETYPE.RACE);
             GetFileToList("Skill.csv", FILETYPE.SKILL);        
+            GetFileToList("Quest.csv", FILETYPE.QUEST);        
         }
         public void SavePlayer()
         {
@@ -180,6 +182,20 @@ namespace TextRPG_TeamProject2nd.Manager
                             Skills.Add(skill);
                         }
                         break;
+                    case FILETYPE.QUEST:
+                        {   
+                            Quest quest = new Quest();
+                            quest.questId = int.Parse(temp[0]);
+                            quest.questName = temp[1];
+                            quest.questDesc = temp[2];
+                            quest.questTargetId = int.Parse(temp[3]);
+                            quest.questTargetAmount = int.Parse(temp[4]);
+                            quest.questProgressAmount = int.Parse(temp[5]);
+                            quest.rewardGold = int.Parse(temp[6]);
+                            quest.rewardItemId = int.Parse(temp[7]);
+                            Quests.Add(quest);
+                        }
+                        break;
                 }
             }
 
@@ -202,6 +218,7 @@ namespace TextRPG_TeamProject2nd.Manager
         public List<Monster>   GetMonsterFile() {return monsters;}
         public List<Race>      GetRaceFile()    {return races;}
         public List<Skill>     GetSkillFile()   {return Skills;}
+        public List<Quest>     GetQuestFile()   {return Quests;}
 
         string path = Path.Combine(Directory.GetCurrentDirectory(), "Team25"); //기본 경로
         List<Item>      items       = new List<Item>();
@@ -209,6 +226,7 @@ namespace TextRPG_TeamProject2nd.Manager
         List<Monster>   monsters    = new List<Monster>();
         List<Race>      races       = new List<Race>();
         List<Skill>     Skills      = new List<Skill>();
+        List<Quest>     Quests      = new List<Quest>();
 
         FILETYPE type = FILETYPE.NONE;
         static FileManager? instance;
