@@ -119,6 +119,7 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneVIllage()
         {
             Console.Clear();
+            player.BackVill();
             UIManager.DisplayTitle("애니멀리아 가도");
             UIManager.DisplayVillageMenu();
             UIManager.DisplayPlayerInfoVillage(player);
@@ -133,22 +134,23 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneFiled()
         {
             Console.Clear();
-            Console.WriteLine("던전을 고르세요!");
-            Console.WriteLine("[0]:마을로이동 [번호]:해당 던전");
+            UIManager.DisplayTitle("원정 고양이 협회");
+            UIManager.DisplayDungeonList();
+            UIManager.DisplayPlayerInfoVillage(player);
+            UIManager.PositionCursorToInput();    
             int input = InputKey();
-            int maxId = 0; // TODO
-            if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
-            for(int i = 0; i < maxId; i++)
+            if(input == 0) 
             {
-                Console.WriteLine($"{i}." + ObjectManager.Instance().GetMap(i).mapInfo.name);
+                ChangeScene(SCENESTATE.VILLAGE);
+                return;
             }
 
             Random random = new Random();
-            Map map = ObjectManager.Instance().GetMap(input);
+            Map map = ObjectManager.Instance().GetMap(input - 1);
             List<int> MobNums = map.mapInfo.mobId;
             List<int> BossNums = map.mapInfo.bossId;
             int maxFloor = map.mapInfo.floor;
-            int index = 0;
+            int mobCount = 0;
             List<Monster> currentMobs = new List<Monster>();
             
             for(int i = 0; i < maxFloor; i++)
@@ -157,16 +159,55 @@ namespace TextRPG_TeamProject2nd.Manager
                    currentMobs.Add(ObjectManager.Instance().GetMonster(BossNums[random.Next(0, BossNums.Count)]));               
                currentMobs.Add(ObjectManager.Instance().GetMonster(MobNums[random.Next(0, MobNums.Count)]));
             } //몬스터 세팅
-            Monster mob = currentMobs[index];
+            Monster mob = currentMobs[mobCount];
             mob.Init();//몬스터는 꼭 초기화가 되어야 사용가능
          
-            while(true)
+            while(true)//던전내부
             {
+                Console.Clear();
+                /*UIManager.DisplayLog();
+                UIManager.DisplayDungeonInfo(map, mobCount);
+                UIManager.DisplayEnemyInfo(mob);
+                UIManager.DisplayPlayerInfoDungeon(player);*/
+
                 isTurn = true;
                 while (true) //플레이어
                 {
+                    //UIManager.PositionCursorToInput();
+                    Console.WriteLine("0턴넘기기 1스킬 2아이템");
                     int PlayerInput = InputKey();
-                    //player.UseSkill()
+                    if (PlayerInput == 0 || player.GetInfo().actionPoint < 0) break;
+
+                    if (PlayerInput == 1)
+                    {
+                        int index = 0;
+                        List<Skill> skills = player.GetPlayerSkillList();
+                        foreach (Skill skill in skills)
+                        {
+                            Console.WriteLine($"[{index}].{skill.name}");
+                            index++;
+                        }
+
+                        //UIManager.PositionCursorToInput();
+                        int SkillInput = InputKey();
+                        if (skills[SkillInput].type == SKILLTYPE.ATTACK && !(player.GetInfo().actionPoint < 0))
+                        {
+                            int val = player.UseSkill(SkillInput, mob);
+                            Console.WriteLine($"{mob.GetInfo().name}에게 {val}만큼의 데미지를 주었다!");
+                        }
+                        else if (skills[SkillInput].type == SKILLTYPE.HEAL && !(player.GetInfo().actionPoint < 0))
+                        {
+                            int val = player.UseSkill(SkillInput, null);
+                            Console.WriteLine($"플레이어는 {val}만큼 회복했다.");
+                        }
+                    }
+
+                    if (PlayerInput == 2)
+                    {
+                        Console.WriteLine("당신은 " + player.UseItem() + "만큼 회복했습니다.");
+                        continue;
+                    }
+                   
                 }
 
                 isTurn = false;
@@ -237,15 +278,16 @@ namespace TextRPG_TeamProject2nd.Manager
             Console.Clear();
             UIManager.DisplayTitle("랫츠 보이드 오프너");
             UIManager.DisplayInventory(player);
-
-            List<Item> temp = player.GetPlayerInvenList();
-            for (int i = 0; i < temp.Count; i++)
-                Console.WriteLine($"[{i + 1}] " + temp[i].name);
-
+            UIManager.DisplayPlayerInfoVillage(player);
+            UIManager.PositionCursorToInput();
+           
             int input = InputKey();
             if (input <= 0) { ChangeScene(SCENESTATE.VILLAGE); return; }
 
+            UIManager.DisplayEquipText(player.GetPlayerInvenList()[input - 1]);
             player.EQItem(input - 1);
+            Console.ReadKey();
+
         }
         private void SceneOuest()
         {
@@ -255,6 +297,7 @@ namespace TextRPG_TeamProject2nd.Manager
             int input = InputKey();
             if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
         }
+
 
         //유틸
         private void ChangeScene(SCENESTATE type)

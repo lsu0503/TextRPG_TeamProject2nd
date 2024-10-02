@@ -24,6 +24,7 @@ namespace TextRPG_TeamProject2nd.Object
             isAttack?.Invoke(skillList[index].power + mobInfo.attack);           
         }
 
+
         public void Damaged(int damage)
         {
             if (mobInfo == null)
@@ -31,6 +32,15 @@ namespace TextRPG_TeamProject2nd.Object
 
             damage /= mobInfo.defence; 
             mobInfo.hp = Math.Max(0, mobInfo.hp - damage);
+        }
+
+        public Item Drops()
+        {
+            Random rand = new Random();
+
+            int id = mobInfo.dropList[rand.Next(0, mobInfo.dropList.Count)];
+            return ObjectManager.Instance().GetItem(id);
+
         }
 
         public Monster Clone()
