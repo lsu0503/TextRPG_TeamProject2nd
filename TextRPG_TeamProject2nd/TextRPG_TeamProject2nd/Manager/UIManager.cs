@@ -40,7 +40,7 @@ namespace TeamProjectBin
         {
             PlayerInfo playerInfo = _player.GetInfo();
             List<string> tempStringList = new List<string>();
-            int windowWidth = Console.WindowWidth;
+            int consoleWidth = Console.WindowWidth - 1;
             int wordLengthByte;
             int tempLength;
             int frameLeft = 0;
@@ -69,15 +69,8 @@ namespace TeamProjectBin
                 // UTF-8일 경우 한글은 한 자에 3Byte로 구성된다. 이를 참고하여 수식을 구성했다.
                 // [p.s. 본 프로젝트와는 관계 없지만, euc-kr일 경우에는 한글은 한 자에 2Byte로 구성된다.]
                 wordLengthByte = Encoding.Default.GetByteCount(tempStringList[i]);
-                tempLength = windowWidth - (((wordLengthByte - tempStringList[i].Length) / 2) + tempStringList[i].Length + 1);
-
-                if(tempLength > frameLeft)
-                    frameLeft = tempLength;
-            }
-
-            for (int i = 0; i < tempStringList.Count; i++)
-            {
-                Console.SetCursorPosition(windowWidth - frameLeft, i);
+                tempLength = consoleWidth - (((wordLengthByte - tempStringList[i].Length) / 2) + tempStringList[i].Length + 1);
+                Console.SetCursorPosition(tempLength, i);
                 Console.Write(tempStringList[i]);
             }
         }
@@ -335,7 +328,6 @@ namespace TeamProjectBin
             int logFrameBottom = Console.WindowHeight - 3;
             int logFrameRight = Console.WindowWidth - 1;
             List<string> tempStringList = new List<string>();
-            int windowWidth = Console.WindowWidth;
             int wordLengthByte;
             int tempLength;
             int frameLeft = 0;
@@ -356,21 +348,13 @@ namespace TeamProjectBin
                 tempStringList.Add(String.Format($"[{i + 1}]{targetSkill.name}[AP {targetSkill.cost}]"));
             }
             // 스킬 관련 요소가 미완이라서 일단 무기 스킬 만 넣음.
-
-            for (int i = 0; i < tempStringList.Count; i++)
+            for (int i = tempStringList.Count-1; i>= 0; i--)
             {
                 // UTF-8일 경우 한글은 한 자에 3Byte로 구성된다. 이를 참고하여 수식을 구성했다.
                 // [p.s. 본 프로젝트와는 관계 없지만, euc-kr일 경우에는 한글은 한 자에 2Byte로 구성된다.]
                 wordLengthByte = Encoding.Default.GetByteCount(tempStringList[i]);
-                tempLength = windowWidth - (((wordLengthByte - tempStringList[i].Length) / 2) + tempStringList[i].Length + 1);
-
-                if (tempLength > frameLeft)
-                    frameLeft = tempLength;
-            }
-
-            for (int i = tempStringList.Count-1; i>= 0; i--)
-            {
-                Console.SetCursorPosition(logFrameRight - frameLeft, logFrameBottom - i);
+                tempLength = logFrameRight - (((wordLengthByte - tempStringList[i].Length) / 2) + tempStringList[i].Length + 1);
+                Console.SetCursorPosition(tempLength, logFrameBottom - i);
                 Console.WriteLine(tempStringList[i]);
             }
 
