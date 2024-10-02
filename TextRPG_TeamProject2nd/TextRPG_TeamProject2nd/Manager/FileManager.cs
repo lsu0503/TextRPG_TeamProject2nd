@@ -91,6 +91,7 @@ namespace TextRPG_TeamProject2nd.Manager
 
             return true;      
         }
+        
         void GetFileToList(string _fileName, FILETYPE _type)
         {
             StreamReader reader = new StreamReader(Path.Combine(path, _fileName));
