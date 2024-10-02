@@ -18,6 +18,7 @@ namespace TextRPG_TeamProject2nd.Manager
             monsters    = FileManager.Instance().GetMonsterFile();
             skills      = FileManager.Instance().GetSkillFile();
             races       = FileManager.Instance().GetRaceFile();
+            quests       = FileManager.Instance().GetRaceFile();
         }
         //------------------------------------------------------//
         /// <summary>
@@ -95,6 +96,21 @@ namespace TextRPG_TeamProject2nd.Manager
 
             return null;
         }
+        /// <summary>
+        /// 퀘스트의 ID를 이용하여 직업을 생성합니다(퀘스트 오브젝트)
+        /// </summary>
+        /// <param name="_id"></param>
+        /// <returns></returns>
+        public Quest GetQuest(int _id)
+        {
+            foreach (Quest quest in quests)
+            {
+                if (quest.questId == _id)
+                    return quest.Clone();
+            }
+
+            return null;
+        }
         //------------------------------------------------------//
         public List<Race> GetRaceList() { return races; }
         public List<Map> GetMapList() { return maps; }
@@ -106,6 +122,7 @@ namespace TextRPG_TeamProject2nd.Manager
         private List<Monster> monsters  =  new List<Monster>();
         private List<Skill>   skills    =  new List<Skill>();
         private List<Race>    races     = new List<Race>();
+        private List<Quest>    quests     = new List<Quest>();
         static ObjectManager? instance  =  null;
     }
 }

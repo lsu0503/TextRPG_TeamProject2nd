@@ -2,7 +2,7 @@ using TextRPG_TeamProject2nd.Manager;
 using TextRPG_TeamProject2nd.Object;
 using TextRPG_TeamProject2nd.Utils;
 
-namespace TextRPG_TeamProject2nd.Quest
+namespace TextRPG_TeamProject2nd.Object
 {
     internal class Quest: IClone<Quest>
     {
