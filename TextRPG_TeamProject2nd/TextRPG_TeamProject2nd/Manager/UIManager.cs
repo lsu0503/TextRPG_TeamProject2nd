@@ -11,9 +11,12 @@ namespace TeamProjectBin
 {
     internal class UIManager
     {
-        public void DisplayTitleScene()
+        static public UIManager Instance()
         {
-            DisplayTitle("Poetry of Travelers");
+            if (instance == null)
+                instance = new UIManager();
+
+            return instance;
         }
 
         // 상단 화면 타이틀을 그리는 함수.
@@ -471,5 +474,7 @@ namespace TeamProjectBin
         }
         //-------------------------------------------------
         private List<string> logList = new List<string>();
+
+        static UIManager? instance;
     }
 }
