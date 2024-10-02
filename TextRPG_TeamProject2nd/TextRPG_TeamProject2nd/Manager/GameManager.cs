@@ -136,11 +136,7 @@ namespace TextRPG_TeamProject2nd.Manager
             List<int> ids = map.mapInfo.mobId;
             List<Monster> currentMobs = new List<Monster>(); 
 
-            int seed    = random.Next(0, ids.Count);
-            int count   = random.Next(3, 6);
-            int floor   = 0;
-            for (int i = 0; i < count; i++)
-                currentMobs.Add(ObjectManager.Instance().GetMonster(ids[seed]));
+           
 
             while(true)
             {
