@@ -33,7 +33,7 @@ namespace TextRPG_TeamProject2nd.Manager
             GetFileToList("Mob.csv", FILETYPE.MONSTER);
             GetFileToList("Race.csv", FILETYPE.RACE);
             GetFileToList("Skill.csv", FILETYPE.SKILL);        
-            GetFileToList("Quest.csv", FILETYPE.QUEST);        
+            //GetFileToList("Quest.csv", FILETYPE.QUEST);        
         }
         public void SavePlayer()
         {

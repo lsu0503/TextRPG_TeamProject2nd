@@ -18,7 +18,7 @@ namespace TextRPG_TeamProject2nd.Manager
             monsters    = FileManager.Instance().GetMonsterFile();
             skills      = FileManager.Instance().GetSkillFile();
             races       = FileManager.Instance().GetRaceFile();
-            quests       = FileManager.Instance().GetRaceFile();
+            quests      = FileManager.Instance().GetQuestFile();
         }
         //------------------------------------------------------//
         /// <summary>
