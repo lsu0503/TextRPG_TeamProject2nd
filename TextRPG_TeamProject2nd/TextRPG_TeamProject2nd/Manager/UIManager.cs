@@ -11,10 +11,14 @@ namespace TeamProjectBin
 {
     internal class UIManager
     {
-        // 상단 화면 타이틀을 그리는 함수.
-        static void DisplayTitle(string _titleText)
+        public void DisplayTitleScene()
         {
-            Console.SetCursorPosition(0, 0);
+            DisplayTitle("Poetry of Travelers");
+        }
+
+        // 상단 화면 타이틀을 그리는 함수.
+        public void DisplayTitle(string _titleText)
+        {
             Console.WriteLine("===================================================================================================="); // 반각으로 100자.
 
             int titleByteLength = Encoding.Default.GetByteCount(_titleText); // 문자열의 바이트 크기 구하기.
@@ -29,7 +33,7 @@ namespace TeamProjectBin
         }
 
         // 우측 플레이어 정보를 그리는 함수.
-        static void DisplayPlayerInfoVillage(Player _player)
+        public void DisplayPlayerInfoVillage(Player _player)
         {
             PlayerInfo playerInfo = _player.GetInfo();
             List<string> tempStringList = new List<string>();
@@ -344,6 +348,8 @@ namespace TeamProjectBin
                 int wordLengthByte = Encoding.Default.GetByteCount(tempStringList[i]);
                 Console.SetCursorPosition(logFrameRight - (((wordLengthByte - tempStringList[i].Length) / 2) + tempStringList[i].Length + 1), logFrameBottom - i);
             }
+
+            tempStringList.Add(String.Format("[0] 턴 넘기기"));
         }
 
         // 던전 정보 출력 함수
