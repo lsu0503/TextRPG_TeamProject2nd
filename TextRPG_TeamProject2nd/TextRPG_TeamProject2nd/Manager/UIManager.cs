@@ -160,12 +160,12 @@ namespace TeamProjectBin
         {
             List<Item> storeList = GameManager.Instance().GetStoreList();
 
+            Console.WriteLine("[하얀 토끼 점장]: 지금 팔고 있는 물건은 이러하다오.");
+            Console.WriteLine("                  재고를 걱정할 필요는 없소. 노동이란 그 끝이 없음이니.\n");
+
             for (int i = 0; i < storeList.Count; i++)
             {
-                Console.WriteLine("[하얀 토끼 점장]: 지금 팔고 있는 물건은 이러하다오.");
-                Console.WriteLine("                  재고를 걱정할 필요는 없소. 노동이란 그 끝이 없음이니.\n");
-
-                Console.Write($"[{i + 1}] {storeList[i].name} <{storeList[i].value}#>");
+                Console.Write($"[{i + 1}] {storeList[i].name} <{storeList[i].value}Gold>");
                 Console.CursorLeft = 35;
                 Console.WriteLine($"| {storeList[i].desc}");
             }
