@@ -45,7 +45,7 @@ namespace TeamProjectBin
             int tempLength;
             int frameLeft = 0;
 
-            tempStringList.Add(String.Format(playerInfo.name + $"     Lv.{playerInfo.level}" + $"[{playerInfo.exp / (float)playerInfo.maxExp: 2N, 5}]"));
+            tempStringList.Add(String.Format(playerInfo.name + $"     Lv.{playerInfo.level}" + $"[{playerInfo.exp / (float)playerInfo.maxExp, 5:2N}]"));
             tempStringList.Add(String.Format($"HP: {playerInfo.hp,4} / {playerInfo.maxHp,-4}"));
             tempStringList.Add(String.Format($"공격력: {playerInfo.attack,-3}"));
             tempStringList.Add(String.Format($"방어력: {playerInfo.defence,-3}"));
@@ -74,6 +74,8 @@ namespace TeamProjectBin
                 Console.Write(tempStringList[i]);
             }
         }
+
+
 
         // 커서 위치 최하단(입력 창)으로 옮기는 함수.
         public void PositionCursorToInput()
@@ -165,8 +167,32 @@ namespace TeamProjectBin
 
             for (int i = 0; i < storeList.Count; i++)
             {
-                Console.Write($"[{i + 1}] {storeList[i].name} <{storeList[i].value}Gold>");
-                Console.CursorLeft = 35;
+                Console.Write($"[{i + 1}] {storeList[i].name}");
+                Console.CursorLeft = 23;
+                Console.WriteLine($"<{storeList[i].value,4} Gold> | {storeList[i].desc}");
+                switch (storeList[i].type)
+                {
+                    case ITEMTYPE.WEAPON:
+                        Console.CursorLeft = 35;
+                        Console.Write($"| 공격력: {storeList[i].attack, 3}  방어력: {storeList[i].defence, 3}");
+                        for(int j = 0; j < storeList[i].skill.Count; j++)
+                            Console.Write($"    스킬 {j}: {ObjectManager.Instance().GetSkill(storeList[i].skill[j]).name}");
+                        Console.WriteLine();
+                        break;
+                    case ITEMTYPE.ARMOR:
+                        Console.CursorLeft = 35;
+                        Console.WriteLine($"| 공격력: {storeList[i].attack,3}  방어력: {storeList[i].defence,3} ");
+                        break;
+                    case ITEMTYPE.CONSUMABLE:
+                        Console.CursorLeft = 35;
+                        Console.Write($"| ");
+                        if (ObjectManager.Instance().GetSkill(storeList[i].skill[0]).type == 0)
+                            Console.Write($"투척무기  ");
+                        else
+                            Console.Write($"의 약 품  ");
+                        Console.WriteLine($"위력: {ObjectManager.Instance().GetSkill(storeList[i].skill[0]).power}");
+                        break;
+                }
                 Console.WriteLine($"| {storeList[i].desc}");
             }
             
@@ -178,7 +204,9 @@ namespace TeamProjectBin
         // 구매 완료 시 표시.
         public void DisplayShopBuyText(Item _itemBought)
         {
-            Console.WriteLine($"{_itemBought.name}을 {_itemBought.value}에 구매하셨습니다.");
+            Console.SetCursorPosition(0, Console.WindowHeight - 3);
+            Console.WriteLine($"{_itemBought.name}을(를( {_itemBought.value} Gold에 구매하셨습니다.");
+            Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
         }
 
         // 상점 - 판매하기
@@ -191,9 +219,33 @@ namespace TeamProjectBin
 
             for (int i = 0; i < invenList.Count; i++)
             {
-                Console.Write($"[{i + 1}] {invenList[i].name} <{invenList[i].value}#>");
+                Console.Write($"[{i + 1}] {invenList[i].name} <{invenList[i].value} Gold>");
                 Console.CursorLeft = 35;
                 Console.WriteLine($"| {invenList[i].desc}");
+
+                switch (invenList[i].type)
+                {
+                    case ITEMTYPE.WEAPON:
+                        Console.CursorLeft = 35;
+                        Console.Write($"| 공격력: {invenList[i].attack,3}  방어력: {invenList[i].defence,3}");
+                        for (int j = 0; j < invenList[i].skill.Count; j++)
+                            Console.Write($"  스킬 {j}: {ObjectManager.Instance().GetSkill(invenList[i].skill[j]).name}");
+                        Console.WriteLine();
+                        break;
+                    case ITEMTYPE.ARMOR:
+                        Console.CursorLeft = 35;
+                        Console.WriteLine($"| 공격력: {invenList[i].attack,3}  방어력: {invenList[i].defence,3} ");
+                        break;
+                    case ITEMTYPE.CONSUMABLE:
+                        Console.CursorLeft = 35;
+                        Console.Write($"| ");
+                        if (ObjectManager.Instance().GetSkill(invenList[i].skill[0]).type == 0)
+                            Console.Write($"투척무기  ");
+                        else
+                            Console.Write($"의 약 품  ");
+                        Console.WriteLine($"위력: {ObjectManager.Instance().GetSkill(invenList[i].skill[0]).power}");
+                        break;
+                }
             }
 
             Console.WriteLine();
@@ -204,11 +256,13 @@ namespace TeamProjectBin
         // 판매 완료 시 표시.
         public void DisplayShopSellText(Item _itemBought)
         {
-            Console.WriteLine($"{_itemBought.name}을 {(int)(_itemBought.value * 0.85f)}에 판매하셨습니다.");
+            Console.SetCursorPosition(0, Console.WindowHeight - 3);
+            Console.WriteLine($"{_itemBought.name}을(을) {_itemBought.value} Gold에 판매하셨습니다.");
+            Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
         }
 
         // 보관함
-        public void DisplayInventory(Player _player, int _page)
+        public void DisplayInventory(Player _player)
         {
             List<Item> invenList = _player.GetPlayerInvenList();
 
@@ -216,36 +270,54 @@ namespace TeamProjectBin
             Console.WriteLine("                      아. 돈은 됬고, 다음에도 잘, 부탁드리도록 하겠습니다.");
             Console.WriteLine("                      뒤따라 가면서 얻는 부산물이 꽤 많거든요. 후후훗.\n");
 
-            for (int i = 0 * _page; i < 9; i++)
+            for (int i = 0; i < invenList.Count; i++)
             {
-                if ((_page * 9) + i >= invenList.Count)
-                    break;
-
-                Console.Write($"[{i + 1}] {invenList[(_page * 9) + i].name}");
+                Console.Write($"[{i + 1}] {invenList[i].name}");
                 Console.CursorLeft = 25;
-                Console.WriteLine($"| {invenList[(_page * 9) + i].desc}");
+                Console.WriteLine($"| {invenList[i].desc}");
+
+                switch (invenList[i].type)
+                {
+                    case ITEMTYPE.WEAPON:
+                        Console.CursorLeft = 35;
+                        Console.Write($"| 공격력: {invenList[i].attack,3}  방어력: {invenList[i].defence,3}");
+                        for (int j = 0; j < invenList[i].skill.Count; j++)
+                            Console.Write($"    스킬 {j}: {ObjectManager.Instance().GetSkill(invenList[i].skill[j]).name}");
+                        Console.WriteLine();
+                        break;
+                    case ITEMTYPE.ARMOR:
+                        Console.CursorLeft = 35;
+                        Console.WriteLine($"| 공격력: {invenList[i].attack,3}  방어력: {invenList[i].defence,3} ");
+                        break;
+                    case ITEMTYPE.CONSUMABLE:
+                        Console.CursorLeft = 35;
+                        Console.Write($"| ");
+                        if (ObjectManager.Instance().GetSkill(invenList[i].skill[0]).type == 0)
+                            Console.Write($"투척무기  ");
+                        else
+                            Console.Write($"의 약 품  ");
+                        Console.WriteLine($"위력: {ObjectManager.Instance().GetSkill(invenList[i].skill[0]).power}");
+                        break;
+                }
             }
 
-            if (_page > 0)
-                Console.Write($"[-] 이전         ");
-            else
-                Console.Write($"                 ");
-
-            Console.Write($"[ {_page} ]");
-
-            if ((_page + 1) * 9 < invenList.Count)
-                Console.WriteLine($"         다음 [+]");
-            else
-                Console.WriteLine();
+            Console.WriteLine();
 
             Console.WriteLine("[0] 나가기");
+        }
+
+        public void DisplayEquipText(Item _itemEquiped)
+        {
+            Console.SetCursorPosition(0, Console.WindowHeight - 3);
+            Console.WriteLine($"{_itemEquiped.name}을(를) 장착하셨습니다.");
+            Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
         }
 
         // 퀘스트 [일시 보류 - Quest 관련 항목이 아직 없음.]
 
 
         // 던전 진입 UI
-        public void DisplayDungeonList(int _page)
+        public void DisplayDungeonList()
         {
             List<Map> mapList = ObjectManager.Instance().GetMapList();
 
@@ -254,27 +326,14 @@ namespace TeamProjectBin
             Console.WriteLine("                    아, 들어가면 살아나오는 건 본인 책임이댜옹. 신중하게 결정하랴옹.\n");
 
             // 던전 목록 출력.
-            for (int i = 0 * _page; i < 9; i++)
+            for (int i = 0; i < mapList.Count; i++)
             {
-                if ((_page * 9) + i >= mapList.Count)
-                    break;
-
-                Console.Write($"[{i + 1}] {mapList[(_page * 9) + i].mapInfo.name} [Lv.{mapList[(_page * 9) + i].mapInfo.levelLimit} / 전투: {mapList[(_page * 9) + i].mapInfo.floor}]");
-                Console.CursorLeft = 40;
-                Console.WriteLine($"| {mapList[(_page * 9) + i].mapInfo.desc}");
+                Console.Write($"[{i + 1}] {mapList[i].mapInfo.name}");
+                Console.CursorLeft = 23;
+                Console.WriteLine($"[Lv.{mapList[i].mapInfo.levelLimit, 2} / 전투: {mapList[i].mapInfo.floor, 2}] | {mapList[i].mapInfo.desc}");
             }
 
-            if (_page > 0)
-                Console.Write($"[-] 이전         ");
-            else
-                Console.Write($"                 ");
-
-            Console.Write($"[ {_page} ]");
-
-            if ((_page + 1) * 9 < mapList.Count)
-                Console.WriteLine($"         다음 [+]");
-            else
-                Console.WriteLine();
+            Console.WriteLine();
 
             Console.WriteLine("[0] 나가기");
         }
