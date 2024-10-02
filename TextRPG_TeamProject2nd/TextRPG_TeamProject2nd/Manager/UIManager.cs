@@ -77,7 +77,7 @@ namespace TeamProjectBin
 
             for (int i = 0; i < tempStringList.Count; i++)
             {
-                Console.SetCursorPosition(frameLeft, i);
+                Console.SetCursorPosition(windowWidth - frameLeft, i);
                 Console.Write(tempStringList[i]);
             }
         }
