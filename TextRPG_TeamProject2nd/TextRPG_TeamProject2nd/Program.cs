@@ -6,6 +6,7 @@ namespace TextRPG_TeamProject2nd
     {
         static void Main(string[] args)
         {
+            //Console.SetWindowSize(300, 45);
             //Init()
             FileManager.Instance().Init();
             ObjectManager.Instance().Init();

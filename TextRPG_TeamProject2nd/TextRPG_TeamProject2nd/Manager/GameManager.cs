@@ -1,4 +1,5 @@
-﻿using TextRPG_TeamProject2nd.Object;
+﻿using TeamProjectBin;
+using TextRPG_TeamProject2nd.Object;
 using TextRPG_TeamProject2nd.Utils;
 namespace TextRPG_TeamProject2nd.Manager
 {
@@ -29,6 +30,7 @@ namespace TextRPG_TeamProject2nd.Manager
         {
             storeList = new List<Item>();
             player = new Player();
+            UIManager = UIManager.Instance();
         }
         //---------------------------------------------------------------
         public void Update()
@@ -68,26 +70,33 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneNone()
         {
             bool isComplete = false;
-            //player = new Player();
             int raceid = 0;
             string name = string.Empty;
             while(!isComplete)
             {
                 Console.Clear();
-                Console.WriteLine("[캐릭터를 생성합니다]");
+                UIManager.DisplayTitle("캐릭터 생성");
+                UIManager.DisplayCreateChracter();
+                UIManager.DisplayCreateCharacterName();
+                UIManager.PositionCursorToInput();
                 name = InputLine();
+                
                 Console.Clear();
-                Console.WriteLine("[종족을 선택하세요]");           
-                Console.WriteLine("1.더미");
-                Console.WriteLine("2.더미");
-                Console.WriteLine("3.더미");
-                Console.WriteLine("4.더미");
-                raceid = (InputKey());
+                UIManager.DisplayTitle("캐릭터 생성");
+                UIManager.DisplayCreateChracter();
+                UIManager.DisplayCreateCharacterRace(0);
+                UIManager.PositionCursorToInput();
+                raceid = InputKey() - 1;
                 Race temp = ObjectManager.Instance().GetRace(raceid);
 
+                Console.Clear();
+                UIManager.DisplayTitle("캐릭터 생성");
+                UIManager.DisplayCreateChracter();
+                Console.WriteLine();
                 Console.WriteLine($"이름:{name} 종족:{temp.name}");
-                Console.WriteLine("[0]:확정 [1]:다시 작성");
-                if(InputKey() == 0) isComplete = true;
+                Console.WriteLine("[0]:다시 작성 [1]:확정");
+                UIManager.PositionCursorToInput();
+                if (InputKey() == 1) isComplete = true;
             }
 
             
@@ -97,9 +106,9 @@ namespace TextRPG_TeamProject2nd.Manager
         }
         private void SceneMain()
         {
-            Console.Clear();
-            Console.WriteLine("----------게임제목-----------");
-            Console.WriteLine("[0]:종료 [1]:새로 시작 [2]:불러오기");
+            UIManager.DisplayTitle("Poetry of Travelers");
+            UIManager.DisplayStartMenu();
+            UIManager.PositionCursorToInput();
             int input = InputKey();
             if (input == 0) { Environment.Exit(0); }
             if (input == 1) { ChangeScene(SCENESTATE.NONE); return;}
@@ -109,14 +118,16 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneVIllage()
         {
             Console.Clear();
-            Console.WriteLine("마을입니다.");
-            Console.WriteLine("[0]:상점 [1]:퀘스트 [2]:보관함 [3]:던 전 [4]:저장 및 종료");
+            UIManager.DisplayTitle("애니멀리아 가도");
+            UIManager.DisplayVillageMenu();
+            UIManager.DisplayPlayerInfoVillage(player);
+            UIManager.PositionCursorToInput();
             int input = InputKey();
-            if (input == 0) ChangeScene(SCENESTATE.STORE);
-            else if (input == 1) ChangeScene(SCENESTATE.QUEST);
+            if (input == 1) ChangeScene(SCENESTATE.STORE);
             else if (input == 2) ChangeScene(SCENESTATE.INVEN);
-            else if (input == 3) ChangeScene(SCENESTATE.FILED);
-            else if (input == 4) { player.Save(); Environment.Exit(0); }
+            else if (input == 3) ChangeScene(SCENESTATE.QUEST);
+            else if (input == 4) ChangeScene(SCENESTATE.FILED);
+            else if (input == 0) { player.Save(); Environment.Exit(0); }
         }
         private void SceneFiled()
         {
@@ -156,10 +167,22 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneStore()
         {
             Console.Clear();
-            Console.WriteLine("상점 공간입니다.");
-            Console.WriteLine("[0]:마을로이동");
+            UIManager.DisplayTitle("래비츠 인더스트리");
+            UIManager.DisplayShopEntrance();
+            UIManager.DisplayPlayerInfoVillage(player);
+            UIManager.PositionCursorToInput();
             int input = InputKey();
             if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
+            if (input == 1)
+            {
+
+            }
+            if (input == 2)
+            {
+
+            }
+
+
         }
         private void SceneInven()
         {
@@ -264,6 +287,7 @@ namespace TextRPG_TeamProject2nd.Manager
 
         //---------------------------------------------------------------
         static GameManager? instance;
+        UIManager UIManager;
         private Player? player = null;
         private SCENESTATE sceneState = SCENESTATE.MAIN;
         private List<Item>? storeList = null;

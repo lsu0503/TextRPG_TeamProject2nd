@@ -51,12 +51,12 @@ namespace TeamProjectBin
             tempStringList.Add(String.Format($"행동력: {playerInfo.actionPoint,-3}"));
             tempStringList.Add("");
 
-            if(playerInfo.weaponId != null)
+            if(ObjectManager.Instance().GetItem(playerInfo.weaponId) != null)
                 tempStringList.Add($"무  기: {ObjectManager.Instance().GetItem(playerInfo.weaponId).name, 40}");
             else
                 tempStringList.Add($"{"무  기: ----------------", 40}");
 
-            if(playerInfo.armorId != null)
+            if (ObjectManager.Instance().GetItem(playerInfo.armorId) != null)
                 tempStringList.Add($"방어구: {ObjectManager.Instance().GetItem(playerInfo.armorId).name, 40}");
             else
                 tempStringList.Add($"{"방어구: ----------------",40}");
