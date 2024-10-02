@@ -98,7 +98,7 @@ namespace TextRPG_TeamProject2nd.Manager
         //------------------------------------------------------//
         public List<Race> GetRaceList() { return races; }
         public List<Map> GetMapList() { return maps; }
-
+        public List<Item> GetItemList() { return items; }
 
         //------------------------------------------------------//
         private List<Item>    items     =  new List<Item>(); 
