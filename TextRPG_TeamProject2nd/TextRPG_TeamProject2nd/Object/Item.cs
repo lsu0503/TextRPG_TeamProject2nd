@@ -12,6 +12,10 @@ namespace TextRPG_TeamProject2nd.Object
 
     internal class Item: IClone<Item>
     {
+        public Item()
+        {
+            skill = new List<int>();
+        }
 
         /// <summary>
         /// 프로토타입 기능입니다, 해당 객체를 복사하여 완전하게 동일한 새로운 객체를 생성합니다.

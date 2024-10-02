@@ -29,6 +29,7 @@ namespace TextRPG_TeamProject2nd.Object
             if (mobInfo == null)
                 return;
 
+            damage /= mobInfo.defence; 
             mobInfo.hp = Math.Max(0, mobInfo.hp - damage);
         }
 
