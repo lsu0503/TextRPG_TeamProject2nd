@@ -45,7 +45,7 @@ namespace TeamProjectBin
             int tempLength;
             int frameLeft = 0;
 
-            tempStringList.Add(String.Format(playerInfo.name + $"     Lv.{playerInfo.level}" + $"[{playerInfo.exp / (float)playerInfo.maxExp: 2N, 5}]"));
+            tempStringList.Add(String.Format(playerInfo.name + $"     Lv.{playerInfo.level}" + $"[{playerInfo.exp / (float)playerInfo.maxExp, 5:2N}]"));
             tempStringList.Add(String.Format($"HP: {playerInfo.hp,4} / {playerInfo.maxHp,-4}"));
             tempStringList.Add(String.Format($"공격력: {playerInfo.attack,-3}"));
             tempStringList.Add(String.Format($"방어력: {playerInfo.defence,-3}"));
@@ -74,6 +74,8 @@ namespace TeamProjectBin
                 Console.Write(tempStringList[i]);
             }
         }
+
+
 
         // 커서 위치 최하단(입력 창)으로 옮기는 함수.
         public void PositionCursorToInput()
@@ -165,7 +167,7 @@ namespace TeamProjectBin
 
             for (int i = 0; i < storeList.Count; i++)
             {
-                Console.Write($"[{i + 1}] {storeList[i].name} <{storeList[i].value}Gold>");
+                Console.Write($"[{i + 1}] {storeList[i].name} <{storeList[i].value} Gold>");
                 Console.CursorLeft = 35;
                 Console.WriteLine($"| {storeList[i].desc}");
             }
@@ -178,7 +180,9 @@ namespace TeamProjectBin
         // 구매 완료 시 표시.
         public void DisplayShoBuyText(Item _itemBought)
         {
-            Console.WriteLine($"{_itemBought.name}을 {_itemBought.value}에 구매하셨습니다.");
+            Console.SetCursorPosition(0, Console.WindowHeight - 3);
+            Console.WriteLine($"{_itemBought.name}을(를( {_itemBought.value} Gold에 구매하셨습니다.");
+            Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
         }
 
         // 상점 - 판매하기
@@ -191,7 +195,7 @@ namespace TeamProjectBin
 
             for (int i = 0; i < invenList.Count; i++)
             {
-                Console.Write($"[{i + 1}] {invenList[i].name} <{invenList[i].value}#>");
+                Console.Write($"[{i + 1}] {invenList[i].name} <{invenList[i].value} Gold>");
                 Console.CursorLeft = 35;
                 Console.WriteLine($"| {invenList[i].desc}");
             }
@@ -204,7 +208,9 @@ namespace TeamProjectBin
         // 판매 완료 시 표시.
         public void DisplayShopSellText(Item _itemBought)
         {
-            Console.WriteLine($"{_itemBought.name}을 {(int)(_itemBought.value * 0.85f)}에 판매하셨습니다.");
+            Console.SetCursorPosition(0, Console.WindowHeight - 3);
+            Console.WriteLine($"{_itemBought.name}을(을) {_itemBought.value} Gold에 판매하셨습니다.");
+            Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
         }
 
         // 보관함
@@ -239,6 +245,13 @@ namespace TeamProjectBin
                 Console.WriteLine();
 
             Console.WriteLine("[0] 나가기");
+        }
+
+        public void DisplayEquipText(Item _itemEquiped)
+        {
+            Console.SetCursorPosition(0, Console.WindowHeight - 3);
+            Console.WriteLine($"{_itemEquiped.name}을(를) 장착하셨습니다.");
+            Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
         }
 
         // 퀘스트 [일시 보류 - Quest 관련 항목이 아직 없음.]
