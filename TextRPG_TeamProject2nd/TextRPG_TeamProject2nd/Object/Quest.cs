@@ -9,6 +9,7 @@ namespace TextRPG_TeamProject2nd.Quest
         {
             Quest ret = new Quest();
 
+
             ret.questId                        = questId;
             ret.questName                      = questName;
             ret.questDesc                      = questDesc;
