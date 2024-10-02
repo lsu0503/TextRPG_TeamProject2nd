@@ -145,17 +145,28 @@ namespace TextRPG_TeamProject2nd.Manager
 
             Random random = new Random();
             Map map = ObjectManager.Instance().GetMap(input);
-            List<int> ids = map.mapInfo.mobId;
-            List<Monster> currentMobs = new List<Monster>(); 
-
-           
-
+            List<int> MobNums = map.mapInfo.mobId;
+            List<int> BossNums = map.mapInfo.bossId;
+            int maxFloor = map.mapInfo.floor;
+            int index = 0;
+            List<Monster> currentMobs = new List<Monster>();
+            
+            for(int i = 0; i < maxFloor; i++)
+            {
+                if (i == maxFloor - 2)
+                   currentMobs.Add(ObjectManager.Instance().GetMonster(BossNums[random.Next(0, BossNums.Count)]));               
+               currentMobs.Add(ObjectManager.Instance().GetMonster(MobNums[random.Next(0, MobNums.Count)]));
+            } //몬스터 세팅
+            Monster mob = currentMobs[index];
+            mob.Init();//몬스터는 꼭 초기화가 되어야 사용가능
+         
             while(true)
             {
                 isTurn = true;
                 while (true) //플레이어
                 {
-
+                    int PlayerInput = InputKey();
+                    //player.UseSkill()
                 }
 
                 isTurn = false;
@@ -181,13 +192,12 @@ namespace TextRPG_TeamProject2nd.Manager
                 int input = -1;
                 if(signal == 1) //구매
                 {
-                                  
+                    UIManager.DisplayTitle("래비츠 인더스트리");
+                    UIManager.DisplayShopBuyList();
+                    UIManager.DisplayPlayerInfoVillage(player);
+                    UIManager.PositionCursorToInput();
+
                     int index = 1;
-                    foreach (Item it in storeList)//상점 리스트업
-                    {
-                        Console.WriteLine(index + " " + it.name);
-                        index++;
-                    }
 
                     input = InputKey();
                     if (input == 0) break;
@@ -199,23 +209,24 @@ namespace TextRPG_TeamProject2nd.Manager
 
                     player.GetInfo().money -= item.value;
                     player.PushInven(item);
-                    Console.ReadLine();
+                    
+                    UIManager.DisplayShopBuyText(storeList[input - 1]);
+                    Console.ReadKey();
                 }
                 else if(signal == 2) //판매
                 {
-                    int index = 1;
-                    foreach (Item it in player.GetPlayerInvenList())
-                    {
-                        Console.WriteLine(index +"."+ it.name);
-                        index++;
-                    }
+                    UIManager.DisplayTitle("래비츠 인더스트리");
+                    UIManager.DisplayShopSellScreen(player);
+                    UIManager.DisplayPlayerInfoVillage(player);
+                    UIManager.PositionCursorToInput();
 
                     input = InputKey();
                     if (input == 0) break;
                     if (input > storeList.Count || input < 0) continue;
 
+                    UIManager.DisplayShopSellText(player.GetPlayerInvenList()[input - 1]);
                     player.GetInfo().money += player.PopInven(input - 1);
-                    Console.ReadLine();
+                    Console.ReadKey();
                 }
 
             }
@@ -224,27 +235,17 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneInven()
         {
             Console.Clear();
-            Console.WriteLine("아이템을 보관하고 장착하는 인벤토리 입니다.");
-            Console.WriteLine("[0]:마을로이동");
-
-            Console.WriteLine("이름     : " + player.GetInfo().name);
-            Console.WriteLine("종족     : " + player.GetInfo().race);
-            Console.WriteLine("무기     : " + player.GetInfo().weaponId);
-            Console.WriteLine("방어구   : " + player.GetInfo().armorId);
-            Console.WriteLine("레벨     : " + player.GetInfo().level);
-            Console.WriteLine("체력     : " + player.GetInfo().hp +"/"+ player.GetInfo().maxHp);
-            Console.WriteLine("공격력   : " + player.GetInfo().attack);
-            Console.WriteLine("방어력   : " + player.GetInfo().defence);
-            Console.WriteLine("AP       : " + player.GetInfo().actionPoint);
-            Console.WriteLine("경험치   : " + player.GetInfo().exp +"/"+ player.GetInfo().maxExp);
-            Console.WriteLine("소지금   : " + player.GetInfo().money);
-
-            int input = InputKey();
-            if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
+            UIManager.DisplayTitle("랫츠 보이드 오프너");
+            UIManager.DisplayInventory(player);
 
             List<Item> temp = player.GetPlayerInvenList();
             for (int i = 0; i < temp.Count; i++)
-                Console.WriteLine($"[{i}] " + temp[i].name);
+                Console.WriteLine($"[{i + 1}] " + temp[i].name);
+
+            int input = InputKey();
+            if (input <= 0) { ChangeScene(SCENESTATE.VILLAGE); return; }
+
+            player.EQItem(input - 1);
         }
         private void SceneOuest()
         {

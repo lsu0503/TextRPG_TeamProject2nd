@@ -1,12 +1,14 @@
-﻿using TextRPG_TeamProject2nd.Manager;
+﻿using System.Runtime.InteropServices;
+using TextRPG_TeamProject2nd.Manager;
 
 namespace TextRPG_TeamProject2nd
 {
     internal class Program
     {
+       
         static void Main(string[] args)
         {
-            //Console.SetWindowSize(300, 45);
+            
             //Init()
             FileManager.Instance().Init();
             ObjectManager.Instance().Init();
@@ -21,5 +23,6 @@ namespace TextRPG_TeamProject2nd
             //Render() OR Etc..
 
         }
+
     }
 }

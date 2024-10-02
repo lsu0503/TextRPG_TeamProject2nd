@@ -91,6 +91,7 @@ namespace TextRPG_TeamProject2nd.Manager
             player.GetInfo().money = int.Parse(inData[11]);
             player.GetInfo().race = inData[12];
 
+            streamReader.Close();
             return true;      
         }
         

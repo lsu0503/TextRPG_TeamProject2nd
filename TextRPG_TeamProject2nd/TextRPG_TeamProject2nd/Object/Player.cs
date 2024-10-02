@@ -62,32 +62,45 @@ namespace TextRPG_TeamProject2nd.Object
 
         }
 
-        public void EQItem(Item _item)
+        public void EQItem(int _index)
         {
-            if (inven == null || _item == null) return;
-
-            switch (_item.type)
+            Item item = inven[_index];
+            if (item == null) return;
+           
+            switch (item.type)
             {
                 case ITEMTYPE.WEAPON:
-                    if (weapon != null) inven.Add(weapon);
-                    weapon = _item;
+                    if (weapon != null)
+                    {
+                        playerInfo.attack -= weapon.attack;
+                        playerInfo.defence -= weapon.defence;
+                        inven.Add(weapon);
+                    }
+                        weapon = item;
                     break;
                 case ITEMTYPE.ARMOR:
-                    if (armor != null) inven.Add(armor);
-                    armor = _item;
+                    if (armor != null)
+                    {
+                        playerInfo.attack -= armor.attack;
+                        playerInfo.defence -= armor.defence;
+                        inven.Add(armor);
+                    }
+                    armor = item;
                     break;
             }
+
+            inven.RemoveAt(_index);
 
             if (playerInfo != null)
             {
-                playerInfo.attack += _item.attack;
-                playerInfo.defence += _item.defence;
+                playerInfo.attack += item.attack;
+                playerInfo.defence += item.defence;
             }
 
-            if(_item.skill.Count != 0 || skillList != null)
+            if(item.skill.Count != 0 || skillList != null)
             {
                 skillList.Clear();
-                foreach (int id in _item.skill)
+                foreach (int id in item.skill)
                     skillList.Add(ObjectManager.Instance().GetSkill(id));
             }
             
@@ -149,6 +162,14 @@ namespace TextRPG_TeamProject2nd.Object
         }
         public void Save()
         {
+            if (playerInfo == null) return;
+            
+            if(weapon != null)
+                playerInfo.weaponId = weapon.id;
+
+            if(armor != null)
+                playerInfo.armorId = armor.id;
+
             FileManager.Instance().SavePlayer();
         }
         public void Load()
@@ -164,6 +185,7 @@ namespace TextRPG_TeamProject2nd.Object
             
         }
 
+        
         //-----------------
 
         //-----------------

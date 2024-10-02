@@ -53,7 +53,7 @@ namespace TeamProjectBin
             tempStringList.Add(String.Format($""));
             tempStringList.Add(String.Format($"소지금: {playerInfo.money}"));
             tempStringList.Add(String.Format($""));
-
+            
             if (ObjectManager.Instance().GetItem(playerInfo.weaponId) != null)
                 tempStringList.Add($"무  기: {ObjectManager.Instance().GetItem(playerInfo.weaponId).name, 40}");
             else
@@ -176,7 +176,7 @@ namespace TeamProjectBin
         }
 
         // 구매 완료 시 표시.
-        public void DisplayShoBuyText(Item _itemBought)
+        public void DisplayShopBuyText(Item _itemBought)
         {
             Console.WriteLine($"{_itemBought.name}을 {_itemBought.value}에 구매하셨습니다.");
         }
