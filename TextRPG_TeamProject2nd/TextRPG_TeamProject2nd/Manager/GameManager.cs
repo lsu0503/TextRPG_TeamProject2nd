@@ -29,6 +29,7 @@ namespace TextRPG_TeamProject2nd.Manager
         public void Init()
         {
             storeList = new List<Item>();
+            InitStore();
             player = new Player();
             UIManager = UIManager.Instance();
         }
@@ -171,18 +172,54 @@ namespace TextRPG_TeamProject2nd.Manager
             UIManager.DisplayShopEntrance();
             UIManager.DisplayPlayerInfoVillage(player);
             UIManager.PositionCursorToInput();
-            int input = InputKey();
-            if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
-            if (input == 1)
+            int signal = InputKey();
+            if (signal == 0) { ChangeScene(SCENESTATE.VILLAGE); return; }
+            
+            while(true)
             {
+                Console.Clear();
+                int input = -1;
+                if(signal == 1) //구매
+                {
+                                  
+                    int index = 1;
+                    foreach (Item it in storeList)//상점 리스트업
+                    {
+                        Console.WriteLine(index + " " + it.name);
+                        index++;
+                    }
+
+                    input = InputKey();
+                    if (input == 0) break;
+                    if (input > storeList.Count || input < 0) continue;
+
+                    Item item = storeList[input - 1];
+                    if (item == null) continue;
+                    if (player.GetInfo().money - item.value < 0) continue;
+
+                    player.GetInfo().money -= item.value;
+                    player.PushInven(item);
+                    Console.ReadLine();
+                }
+                else if(signal == 2) //판매
+                {
+                    int index = 1;
+                    foreach (Item it in player.GetPlayerInvenList())
+                    {
+                        Console.WriteLine(index +"."+ it.name);
+                        index++;
+                    }
+
+                    input = InputKey();
+                    if (input == 0) break;
+                    if (input > storeList.Count || input < 0) continue;
+
+                    player.GetInfo().money += player.PopInven(input - 1);
+                    Console.ReadLine();
+                }
 
             }
-            if (input == 2)
-            {
-
-            }
-
-
+            
         }
         private void SceneInven()
         {
@@ -225,9 +262,12 @@ namespace TextRPG_TeamProject2nd.Manager
         }
         private void InitStore()
         {
-            for(int i = 1000; i < 1500; i++)
+            int maxId = 2000;
+            List<Item> items = ObjectManager.Instance().GetItemList();
+            foreach(Item item in items)
             {
-               storeList.Add(ObjectManager.Instance().GetItem(i));
+                if (item.id == maxId || storeList == null) break;
+                storeList.Add(item);
             }
         }
         private bool BuyItem(int index)
