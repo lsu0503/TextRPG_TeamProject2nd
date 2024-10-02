@@ -50,8 +50,16 @@ namespace TeamProjectBin
             tempStringList.Add(String.Format($"방어력: {playerInfo.defence,-3}"));
             tempStringList.Add(String.Format($"행동력: {playerInfo.actionPoint,-3}"));
             tempStringList.Add("");
-            tempStringList.Add($"무  기: {ObjectManager.Instance().GetItem(playerInfo.weaponId).name}");
-            tempStringList.Add($"방어구: {ObjectManager.Instance().GetItem(playerInfo.armorId).name}");
+
+            if(playerInfo.weaponId != null)
+                tempStringList.Add($"무  기: {ObjectManager.Instance().GetItem(playerInfo.weaponId).name, 40}");
+            else
+                tempStringList.Add($"{"무  기: ----------------", 40}");
+
+            if(playerInfo.armorId != null)
+                tempStringList.Add($"방어구: {ObjectManager.Instance().GetItem(playerInfo.armorId).name, 40}");
+            else
+                tempStringList.Add($"{"방어구: ----------------",40}");
 
             for (int i = 0; i < tempStringList.Count; i++)
             {
