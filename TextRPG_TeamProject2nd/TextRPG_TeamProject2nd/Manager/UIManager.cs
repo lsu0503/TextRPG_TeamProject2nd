@@ -254,7 +254,80 @@ namespace TeamProjectBin
             Console.WriteLine("종료하시겠습니까? [Y - 예 / N - 아니오]");
         }
         
-        // 던전 내부 관련 UI
+        /* 던전 내부 관련 UI */
+        // 플레이어 정보 출력 함수
+        
+        // 적 정보 출력 함수
 
+        // 현재 턴 정보 출력 함수
+
+        // 던전 정보 출력 함수
+
+        // 로그 출력 함수
+        public void DisplayLog()
+        {
+            int logFrameHeight = Console.WindowHeight - 3;
+
+            for(int i = Math.Max(0, logList.Count - logFrameHeight); i < logList.Count; i++)
+                Console.WriteLine(logList[i]);
+        }
+
+        // 로그 생성 함수
+        public void CreateLogAppearance(Monster _monster)
+        {
+            logList.Add($"[{_monster.GetInfo().name}]이 출현하였다!");
+            logList.Add("");
+        }
+
+        public void CreateLogBattle(Player _player, Monster _monster, Skill _skill, int _power, int _skillType)
+        {
+            if (GameManager.Instance().GetTurn())
+            {
+                logList.Add($"[{_player.GetType().Name}]은(는) [{_skill.name}]을(를) 사용했다!");
+                if(_skillType == 0)
+                    logList.Add($"[{_monster.GetType().Name}]은(는) {_power}의 피해를 받았다!");
+                else if( _skillType == 1)
+                    logList.Add($"[{_player.GetType().Name}]은(는) {_skill.name}만큼 회복했다!");
+            }
+
+            else
+            {
+                logList.Add($"[{_monster.GetType().Name}]은(는) [{_skill.name}]을(를) 사용했다!");
+                if (_skillType == 0)
+                    logList.Add($"[{_player.GetType().Name}]은(는) {_power}의 피해를 받았다!");
+                else if (_skillType == 1)
+                    logList.Add($"[{_monster.GetType().Name}]은(는) {_skill.name}만큼 회복했다!");
+            }
+
+            logList.Add("");
+        }
+
+        // 승리 로그 생성 함수
+        public void CreateLogVictory(Monster _monster, int _itemId, int reward)
+        {
+            logList.Add($"[{_monster.GetType().Name}]과의 전투에서 승리하였다!");
+            
+            if (_itemId >= 0)
+                logList.Add($"[{ObjectManager.Instance().GetItem(_itemId)}]을(를) 습득하였다.");
+            
+            logList.Add($"돈과 경험치를 {reward}만큼 습득하였다!");
+
+            logList.Add("");
+        }
+
+        public void CreateLogLevelUp(Player _player)
+        {
+            logList.Add($"레벨업!");
+            logList.Add($"[{_player.GetType().Name}]은(는) Lv.{_player.GetInfo().level}이 되었다.");
+            logList.Add("");
+        }
+
+        public void CreateLogDefeat()
+        {
+            logList.Add($"패배하였다...");
+            logList.Add("");
+        }
+        //-------------------------------------------------
+        private List<string> logList = new List<string>();
     }
 }
