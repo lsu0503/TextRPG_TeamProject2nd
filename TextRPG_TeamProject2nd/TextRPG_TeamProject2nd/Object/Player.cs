@@ -235,6 +235,17 @@ namespace TextRPG_TeamProject2nd.Object
             return quest;
         }
 
+        public Item[] GetPlayerEq()
+        {
+            Item[] ret = new Item[3];
+            ret[(int)ITEMTYPE.WEAPON] = weapon ?? new Item() { name = "없음" };
+            ret[(int)ITEMTYPE.ARMOR] = armor ?? new Item() { name = "없음" };
+            ret[(int)ITEMTYPE.CONSUMABLE] = item ?? new Item() { name = "없음" };
+
+            return ret;
+             
+        }
+
         void SaveInven()
         {
             StreamWriter streamWriter = new StreamWriter(path + "\\INVEN.spam");
@@ -268,9 +279,9 @@ namespace TextRPG_TeamProject2nd.Object
         string path = Path.Combine(Directory.GetCurrentDirectory(), "Team25");
         PlayerInfo? playerInfo = new PlayerInfo();
         List<Skill>? skillList = new List<Skill>();
-        Item? weapon = null;
-        Item? armor = null;
-        Item? item = null;
+        Item? weapon = null; //0
+        Item? armor = null; //1
+        Item? item = null;//2
         Quest? currentQuestId = null;
         Quest? currentQuestProgressAmount = null;
 
