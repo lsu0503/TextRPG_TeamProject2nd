@@ -441,22 +441,30 @@ namespace TeamProjectBin
         {
             int frameTop = 5;
             int frameLeft = Console.WindowWidth - 30;
-            
+
+            // UTF-8일 경우 한글은 한 자에 3Byte로 구성된다. 이를 참고하여 수식을 구성했다.
+            // [p.s. 본 프로젝트와는 관계 없지만, euc-kr일 경우에는 한글은 한 자에 2Byte로 구성된다.]
+            int wordLengthByte = Encoding.Default.GetByteCount(_monster.GetInfo().name);
+            int tempLength = ((wordLengthByte - _monster.GetInfo().name.Length) / 2) + _monster.GetInfo().name.Length;
+            if (tempLength > 9)
+                frameLeft = tempLength + 5;
+            else
+                frameLeft = 14;
+
             Console.SetCursorPosition(frameLeft, frameTop);
-            
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write($"{_monster.GetInfo().name}");
+            Console.Write($"{_monster.GetInfo().name}"); // 몬스터 이름 빨간색으로 표시
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write($" [{_monster.GetInfo().level}]");
+            Console.Write($" [{_monster.GetInfo().level, 2}]"); // 몬스터 레벨 일단 노란색으로.
 
             Console.SetCursorPosition(frameLeft, frameTop + 1);
             if (_monster.GetInfo().hp > 0)
                 Console.ForegroundColor = ConsoleColor.White;
             else
                 Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write($"HP {_monster.GetInfo().hp,  4} / {_monster.GetInfo().maxHp, -4}");
-            
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write($"HP {_monster.GetInfo().hp,4} / {_monster.GetInfo().maxHp,-4}"); // 몬스터 체력 [생존 시 흰색 / 사망 시 회색]
+
+            Console.ForegroundColor = ConsoleColor.White; // 글자 색 리셋.
         }
         
         //// 현재 턴 정보 출력 함수
