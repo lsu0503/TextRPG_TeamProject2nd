@@ -441,15 +441,21 @@ namespace TeamProjectBin
         {
             int frameTop = 5;
             int frameLeft = Console.WindowWidth - 30;
-            if (_monster.GetInfo().hp < 0)
-                Console.ForegroundColor = ConsoleColor.Gray;
-
+            
             Console.SetCursorPosition(frameLeft, frameTop);
-            Console.Write($"{_monster.GetInfo().name} [{_monster.GetInfo().level}]");
+            
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write($"{_monster.GetInfo().name}");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write($" [{_monster.GetInfo().level}]");
 
             Console.SetCursorPosition(frameLeft, frameTop + 1);
+            if (_monster.GetInfo().hp > 0)
+                Console.ForegroundColor = ConsoleColor.White;
+            else
+                Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write($"HP {_monster.GetInfo().hp,  4} / {_monster.GetInfo().maxHp, -4}");
-
+            
             Console.ForegroundColor = ConsoleColor.White;
         }
         
