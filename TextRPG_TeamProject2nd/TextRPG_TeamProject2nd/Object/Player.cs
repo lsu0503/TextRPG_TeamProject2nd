@@ -268,6 +268,7 @@ namespace TextRPG_TeamProject2nd.Object
             armor = ObjectManager.Instance().GetItem(playerInfo.armorId);
             item = ObjectManager.Instance().GetItem(playerInfo.consumeId);
 
+            skillList.Clear();
             if(weapon != null)
                 foreach(int id in weapon.skill)
             {
@@ -322,6 +323,7 @@ namespace TextRPG_TeamProject2nd.Object
             string outData = reader.ReadLine();
             string[] inData = outData.Split(",");
 
+            inven.Clear();
             foreach(string data in inData)
             {
                 if (data == "") break;

@@ -516,29 +516,38 @@ namespace TeamProjectBin
         {
             if (GameManager.Instance().GetTurn())
             {
-                logList.Add($"[{_player.GetType().Name}]은(는) [{_skill.name}]을(를) 사용했다!");
+                logList.Add($"[{_player.GetInfo().name}]은(는) [{_skill.name}]을(를) 사용했다!");
                 if (_skillType == 0)
                 {
                     if(_power == -1)
-                        logList.Add($"[{_monster.GetType().Name}]은(는) 잽싸게 회피했다!");
+                        logList.Add($"[{_monster.GetInfo().name}]은(는) 잽싸게 회피했다!");
                     else
                     {
                         if(_isCrit)
                             logList.Add($"A SINGULAR STRIKE!!!");
-                        logList.Add($"[{_monster.GetType().Name}]은(는) {_power}의 피해를 받았다!");
+                        logList.Add($"[{_monster.GetInfo().name}]은(는) {_power}의 피해를 받았다!");
                     }
                 }
                 else if (_skillType == 1)
-                    logList.Add($"[{_player.GetType().Name}]은(는) {_power}만큼 회복했다!");
+                    logList.Add($"[{_player.GetInfo().name}]은(는) {_power}만큼 회복했다!");
             }
 
             else
             {
-                logList.Add($"[{_monster.GetType().Name}]은(는) [{_skill.name}]을(를) 사용했다!");
+                logList.Add($"[{_monster.GetInfo().name}]은(는) [{_skill.name}]을(를) 사용했다!");
                 if (_skillType == 0)
-                    logList.Add($"[{_player.GetType().Name}]은(는) {_power}의 피해를 받았다!");
+                {
+                    if (_power == -1)
+                        logList.Add($"[{_monster.GetInfo().name}]은(는) 잽싸게 회피했다!");
+                    else
+                    {
+                        if (_isCrit)
+                            logList.Add("뼈 아픈 고통이 당도하였다!!!");
+                        logList.Add($"[{_player.GetInfo().name}]은(는) {_power}의 피해를 받았다!");
+                    }
+                }
                 else if (_skillType == 1)
-                    logList.Add($"[{_monster.GetType().Name}]은(는) {_power}만큼 회복했다!");
+                    logList.Add($"[{_monster.GetInfo().name}]은(는) {_power}만큼 회복했다!");
             }
 
             logList.Add("");
@@ -548,8 +557,8 @@ namespace TeamProjectBin
         {
             Item[] playerEquiped = _player.GetPlayerEq();
 
-            logList.Add($"{_monster.GetType().Name}]은(는) [{playerEquiped[2].name}]을(를) 사용했다!");
-            logList.Add($"[{_player.GetType().Name}]은(는) {_power}만큼 회복했다!");
+            logList.Add($"[{_player.GetInfo().name}]은(는) [{playerEquiped[2].name}]을(를) 사용했다!");
+            logList.Add($"[{_player.GetInfo().name}]은(는) {_power}만큼 회복했다!");
             logList.Add("");
         }
 
