@@ -172,9 +172,9 @@ namespace TextRPG_TeamProject2nd.Manager
                 UIManager.DisplayDungeonInfo(map, mobCount);
                 UIManager.DisplayEnemyInfo(mob);
                 UIManager.DisplayPlayerInfoDungeon(player);
-               /* Console.WriteLine($"현재 남은 몬스터 : {maxFloor - mobCount}");
+                Console.WriteLine($"현재 남은 몬스터 : {maxFloor - mobCount}");
                 Console.WriteLine($"[{mob.GetInfo().name}] HP:{mob.GetInfo().hp}/{mob.GetInfo().maxHp}");
-                Console.WriteLine($"[{player.GetInfo().name}] HP:{player.GetInfo().hp}/{player.GetInfo().maxHp}");*/
+                Console.WriteLine($"[{player.GetInfo().name}] HP:{player.GetInfo().hp}/{player.GetInfo().maxHp}");
 
                 isTurn = true;
                 while (true) //플레이어
@@ -348,10 +348,6 @@ namespace TextRPG_TeamProject2nd.Manager
             int input = InputKey();
             if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
 
-            if(input == 1)
-            {
-                if(player)
-            }
         }
 
 
