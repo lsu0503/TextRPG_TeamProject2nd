@@ -188,9 +188,9 @@ namespace TextRPG_TeamProject2nd.Manager
                             UIManager.DisplaySkillLine(player);
                             int inputAction = InputKey();
 
-                            if (player.GetActionPoint() > 0)
+                            if (inputAction > 0)
                             {
-                                if (inputAction > 0)
+                                if (player.GetActionPoint() > 0)
                                 {
                                     int SkillInput = inputAction - 1;
                                     bool isCrit;
@@ -202,12 +202,12 @@ namespace TextRPG_TeamProject2nd.Manager
                                     else if (skills[SkillInput].type == SKILLTYPE.HEAL)
                                         UIManager.CreateLogAction(player, mob, player.GetSkill(SkillInput), val, 1, isCrit);
                                 }
-                            }
 
-                            else
-                            {
-                                UIManager.DisplayApShotage();
-                            }
+                                else
+                                {
+                                    UIManager.DisplayApShotage();
+                                }
+                            }   
                         }
 
                         if (PlayerInput == 2)
@@ -395,16 +395,20 @@ namespace TextRPG_TeamProject2nd.Manager
             if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
             else if(input == 1 && currentQuest.CheckProgress())
             {
-                Item reward = ObjectManager.Instance().GetItem(currentQuest.rewardItemId);
-                player.PushInven(reward);
+                if (currentQuest.rewardItemId != 0)
+                {
+                    Item reward = ObjectManager.Instance().GetItem(currentQuest.rewardItemId);
+                    player.PushInven(reward);
+                }
                 player.GetExp(currentQuest.rewardGold);
                 player.GetInfo().money += currentQuest.rewardGold;
-                UIManager.DisplayQuestClear(currentQuest, player);
-
                 Quest nextQuest = ObjectManager.Instance().GetQuest(currentQuest.questId + 1);
                 
                 if(nextQuest == null)
                     nextQuest = ObjectManager.Instance().GetQuest(currentQuest.questId);
+
+                UIManager.DisplayQuestClear(currentQuest, player);
+                Console.ReadKey();
 
                 player.SetQuest(nextQuest);
 

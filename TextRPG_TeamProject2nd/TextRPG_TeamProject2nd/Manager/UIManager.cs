@@ -565,7 +565,7 @@ namespace TeamProjectBin
         // 승리 로그 생성 함수
         public void CreateLogVictory(Monster _monster, Item _item, int _money, int _exp)
         {
-            logList.Add($"[{_monster.GetType().Name}]과의 전투에서 승리하였다!");
+            logList.Add($"[{_monster.GetInfo().name}]과의 전투에서 승리하였다!");
             
             if (_item.id != -1)
                 logList.Add($"[{_item.name}]을(를) 습득하였다.");
@@ -578,7 +578,7 @@ namespace TeamProjectBin
         public void CreateLogLevelUp(Player _player)
         {
             logList.Add($"레벨업!");
-            logList.Add($"[{_player.GetType().Name}]은(는) Lv.{_player.GetInfo().level}이 되었다.");
+            logList.Add($"[{_player.GetInfo().name}]은(는) Lv.{_player.GetInfo().level}이 되었다.");
             logList.Add("");
         }
 
