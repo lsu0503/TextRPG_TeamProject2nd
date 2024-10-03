@@ -12,6 +12,7 @@ namespace TextRPG_TeamProject2nd.Manager
         STORE,
         INVEN,
         QUEST,
+        CONNECT,
         END,
     }
 
@@ -59,6 +60,9 @@ namespace TextRPG_TeamProject2nd.Manager
                     break;
                 case SCENESTATE.QUEST:
                     SceneOuest();
+                    break;
+                case SCENESTATE.CONNECT:
+                    SceneConnect();
                     break;
                 case SCENESTATE.END:
                     SceneEnd();
@@ -130,6 +134,7 @@ namespace TextRPG_TeamProject2nd.Manager
             else if (input == 2) ChangeScene(SCENESTATE.INVEN);
             else if (input == 3) ChangeScene(SCENESTATE.QUEST);
             else if (input == 4) ChangeScene(SCENESTATE.FILED);
+            else if (input == 5) ChangeScene(SCENESTATE.CONNECT);
             else if (input == 0) ChangeScene(SCENESTATE.END);
         }
         private void SceneFiled()
@@ -425,6 +430,155 @@ namespace TextRPG_TeamProject2nd.Manager
             int input = InputKey();
             if (input == 0) { ChangeScene(SCENESTATE.VILLAGE); }
             if (input == 1) { player.Save(); Environment.Exit(0); }
+        }
+        private void SceneConnect()
+        {
+            Console.Clear();
+            UIManager.DisplayTitle("애니멀 월드 대륙간 거래소 창구");
+            Console.WriteLine("[슬라임 과장] : (O ㅅ O ) 개인 거래소를 개설 또는 참가를 하시면 다른 대륙의 친구분과 대화 또는 거래가 가능하십니다. ");
+            Console.WriteLine();
+            Console.WriteLine("[0]나 가 기");
+            Console.WriteLine("[1]거래소 개설");
+            Console.WriteLine("[2]거래소 참가");
+            UIManager.PositionCursorToInput();
+            int key = InputKey();
+            if (key == 0) { ChangeScene(SCENESTATE.VILLAGE); return; }
+
+            if (key == 1)
+            {
+                try
+                {
+                    Console.WriteLine("본인의 아이피를 입력하세요.");
+                    string ip = InputLine();
+                    Console.WriteLine("상대방을 기다립니다...");
+                    Connector.Instance().HostStart(ip);
+                    while (true)
+                    {
+                        Console.Clear();
+                        int index = 1;
+                        Console.WriteLine("보낼 아이템을 선택하세요. [아이템번호:보내기] [0:메세지만 보내기]");
+                        foreach (Item it in player.GetPlayerInvenList())
+                        {
+                            Console.WriteLine($"{index} : {it.name}");
+                            index++;
+                        }
+                        
+                        index = InputKey();
+                        Item? sendItem = null;
+                        if (index != 0)
+                        {
+                            sendItem = player.GetPlayerInvenList()[index - 1];
+                            player.PopInven(index - 1);
+                        }             
+                        Console.WriteLine("메세지를 입력하세요.");
+                        string mess = InputLine();
+
+                        if(sendItem != null)
+                            Connector.Instance().Send(player.GetInfo().name, sendItem.id, mess);
+                        else
+                            Connector.Instance().Send(player.GetInfo().name, 0, mess);
+                        //--------------------------------------
+
+                        Console.WriteLine("상대방의 응답을 기다립니다..");
+                        string[] packet = Connector.Instance().Recv();
+                        Item? item = null;
+                        if (int.Parse(packet[1]) != 0)
+                        {
+                            item = ObjectManager.Instance().GetItem(int.Parse(packet[1]));
+                            Console.WriteLine($"{packet[0]}이(가) {item.name}을 보냈습니다.");
+                            Console.WriteLine($"{item.name}이(가) 인벤토리에 추가 되었습니다.");
+                            player.PushInven(item);
+                        }
+                        Console.WriteLine($"{packet[0]}:{packet[2]}");
+                        
+                        Console.WriteLine("[0]:마을로 가기 [1]:계속하기");
+                        int input = InputKey();
+                        if (input == 0)
+                        {
+                            ChangeScene(SCENESTATE.VILLAGE);
+                            Connector.Instance().Close();
+                            break;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("연결 종료..");
+                    Console.ReadLine();
+                    ChangeScene(SCENESTATE.VILLAGE);
+                    Connector.Instance().Close();
+                    return;
+                }
+            } //거래소 개설
+            if (key == 2)
+            {
+                try
+                {
+                    Console.WriteLine("거래소의 아이피를 입력하세요.");
+                    string ip = InputLine();
+                    Console.WriteLine("접속중...");
+                    Connector.Instance().JoinStart(ip);
+                    while (true)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("상대방의 응답을 기다립니다..");
+                        string[] packet = Connector.Instance().Recv();
+                        Item? item = null;
+                        if (int.Parse(packet[1]) != 0)
+                        {
+                            item = ObjectManager.Instance().GetItem(int.Parse(packet[1]));
+                            Console.WriteLine($"{packet[0]}이(가) {item.name}을 보냈습니다.");
+                            Console.WriteLine($"{item.name}이(가) 인벤토리에 추가 되었습니다.");
+                            player.PushInven(item);
+                        }
+                        Console.WriteLine($"{packet[0]}:{packet[2]}");
+
+                        Console.WriteLine("[0]:마을로 가기 [1]:계속하기");
+                        int input = InputKey();
+                        if (input == 0)
+                        {
+                            ChangeScene(SCENESTATE.VILLAGE);
+                            Connector.Instance().Close();
+                            break;
+                        }
+                        //-------------------------
+
+                        int index = 1;
+                        Console.WriteLine("보낼 아이템을 선택하세요. [아이템번호:보내기]");
+                        foreach (Item it in player.GetPlayerInvenList())
+                        {
+                            Console.WriteLine($"{index} : {it.name}");
+                            index++;
+                        }
+
+                        index = InputKey();
+                        Item? sendItem = null;
+                        if (index != 0)
+                        {
+                            sendItem = player.GetPlayerInvenList()[index - 1];
+                            player.PopInven(index - 1);
+                        }
+                        Console.WriteLine("메세지를 입력하세요.");
+                        string mess = InputLine();
+
+                        if (sendItem != null)
+                            Connector.Instance().Send(player.GetInfo().name, sendItem.id, mess);
+                        else
+                            Connector.Instance().Send(player.GetInfo().name, 0, mess);
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("연결 종료..");
+                    Console.ReadLine();
+                    ChangeScene(SCENESTATE.VILLAGE);
+                    Connector.Instance().Close();
+                    return;
+                }
+
+            } //거래소 참가
+
         }
 
 

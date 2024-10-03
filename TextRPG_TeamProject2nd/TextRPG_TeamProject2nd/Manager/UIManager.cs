@@ -147,6 +147,7 @@ namespace TeamProjectBin
             Console.WriteLine("[2] 보관함         : 랫츠 보이드 오프너");
             Console.WriteLine("[3] 퀘스트         : 도기독스 알선소");
             Console.WriteLine("[4] 던  전         : 원정 고양이 협회");
+            Console.WriteLine("[5] 통  신         : 애니멀 월드 대륙간 거래소");
             Console.WriteLine("[0] 저장하고 나가기: 세어가는 양 여관");
         }
 
