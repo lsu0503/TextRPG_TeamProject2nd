@@ -168,13 +168,13 @@ namespace TextRPG_TeamProject2nd.Manager
             while(true)//던전내부
             {
                 Console.Clear();
-                /*UIManager.DisplayLog();
+                UIManager.DisplayLog();
                 UIManager.DisplayDungeonInfo(map, mobCount);
                 UIManager.DisplayEnemyInfo(mob);
-                UIManager.DisplayPlayerInfoDungeon(player);*/
-                Console.WriteLine($"현재 남은 몬스터 : {maxFloor - mobCount}");
+                UIManager.DisplayPlayerInfoDungeon(player);
+               /* Console.WriteLine($"현재 남은 몬스터 : {maxFloor - mobCount}");
                 Console.WriteLine($"[{mob.GetInfo().name}] HP:{mob.GetInfo().hp}/{mob.GetInfo().maxHp}");
-                Console.WriteLine($"[{player.GetInfo().name}] HP:{player.GetInfo().hp}/{player.GetInfo().maxHp}");
+                Console.WriteLine($"[{player.GetInfo().name}] HP:{player.GetInfo().hp}/{player.GetInfo().maxHp}");*/
 
                 isTurn = true;
                 while (true) //플레이어
