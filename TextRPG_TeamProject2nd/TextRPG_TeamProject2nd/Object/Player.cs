@@ -20,13 +20,13 @@ namespace TextRPG_TeamProject2nd.Object
         /// <param name="mob"></param>
         public int UseSkill(int index, Monster mob = null)
         {
-            isAttack += mob.Damaged;
+            isAttack = mob.Damaged;
             SKILLTYPE type = skillList[index].type;
             
             if (playerInfo != null && (type == SKILLTYPE.ATTACK))
             {
-                isAttack?.Invoke(playerInfo.attack * skillList[index].power); //attack
-                return playerInfo.attack * skillList[index].power;
+                isAttack?.Invoke((playerInfo.attack * skillList[index].power) / mob.GetInfo().defence); //attack
+                return (playerInfo.attack * skillList[index].power) / mob.GetInfo().defence;
             }
             else if (playerInfo != null && type == SKILLTYPE.HEAL)
             {
@@ -46,7 +46,7 @@ namespace TextRPG_TeamProject2nd.Object
         public void Damaged(int damage)
         {
             if (playerInfo != null)
-                playerInfo.hp = Math.Max(0, playerInfo.hp - (damage / playerInfo.defence));
+                playerInfo.hp = Math.Max(0, playerInfo.hp - damage);
         }
 
         public void GetExp(int val)
@@ -83,10 +83,10 @@ namespace TextRPG_TeamProject2nd.Object
 
         public void EQItem(int _index)
         {
-            Item item = inven[_index];
-            if (item == null) return;
+            Item Selectitem = inven[_index];
+            if (Selectitem == null) return;
            
-            switch (item.type)
+            switch (Selectitem.type)
             {
                 case ITEMTYPE.WEAPON:
                     if (weapon != null)
@@ -95,7 +95,7 @@ namespace TextRPG_TeamProject2nd.Object
                         playerInfo.defence -= weapon.defence;
                         inven.Add(weapon);
                     }
-                    weapon = item;
+                    weapon = Selectitem;
                     break;
                 case ITEMTYPE.ARMOR:
                     if (armor != null)
@@ -104,26 +104,33 @@ namespace TextRPG_TeamProject2nd.Object
                         playerInfo.defence -= armor.defence;
                         inven.Add(armor);
                     }
-                    armor = item;
+                    armor = Selectitem;
+                    break;
+                case ITEMTYPE.CONSUMABLE:
+                    if(item != null)
+                    {
+                        inven.Add(item);
+                    }
+                    item = Selectitem;
                     break;
             }
 
             inven.RemoveAt(_index);
+            if (Selectitem.type == ITEMTYPE.CONSUMABLE) return;
 
             if (playerInfo != null)
             {
-                playerInfo.attack += item.attack;
-                playerInfo.defence += item.defence;
+                playerInfo.attack += Selectitem.attack;
+                playerInfo.defence += Selectitem.defence;
             }
 
-            if(item.skill.Count != 0 || skillList != null)
+            if((Selectitem.skill.Count != 0 || skillList != null) && Selectitem.type == ITEMTYPE.WEAPON)
             {
                 skillList.Clear();
-                foreach (int id in item.skill)
+                foreach (int id in Selectitem.skill)
                     skillList.Add(ObjectManager.Instance().GetSkill(id));
             }
-            
-               
+                  
         }
         public void DQItem(int index)
         {
@@ -155,7 +162,8 @@ namespace TextRPG_TeamProject2nd.Object
         public void BackVill()
         {
             ConsumeCount = 3;
-            playerInfo.hp = playerInfo.maxHp;
+            if(playerInfo != null)
+                playerInfo.hp = playerInfo.maxHp;
         }
 
         public List<Skill> GetPlayerSkillList() {return skillList ?? new List<Skill>(); }
@@ -202,16 +210,24 @@ namespace TextRPG_TeamProject2nd.Object
         public void Load()
         {
             if (!FileManager.Instance().LoadPlayer())
+            {
                 Console.WriteLine("저장 데이터가 없습니다.");
+                return;
+            }
 
             if (playerInfo == null)
                 return;
 
             weapon = ObjectManager.Instance().GetItem(playerInfo.weaponId);
             armor = ObjectManager.Instance().GetItem(playerInfo.armorId);
-            quest = ObjectManager.Instance().GetQuest(playerInfo.questId);
 
-            quest.questProgressAmount = playerInfo.questProgress;
+            foreach(int id in weapon.skill)
+            {
+                skillList.Add(ObjectManager.Instance().GetSkill(id));
+            }
+            
+            //quest = ObjectManager.Instance().GetQuest(playerInfo.questId);
+            //quest.questProgressAmount = playerInfo.questProgress;
         }
 
         public Quest GetCurrentQuest()
@@ -254,6 +270,7 @@ namespace TextRPG_TeamProject2nd.Object
         List<Skill>? skillList = new List<Skill>();
         Item? weapon = null;
         Item? armor = null;
+        Item? item = null;
         Quest? currentQuestId = null;
         Quest? currentQuestProgressAmount = null;
 

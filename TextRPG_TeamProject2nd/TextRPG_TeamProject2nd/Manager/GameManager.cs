@@ -155,9 +155,12 @@ namespace TextRPG_TeamProject2nd.Manager
             
             for(int i = 0; i < maxFloor; i++)
             {
-                if (i == maxFloor - 2)
-                   currentMobs.Add(ObjectManager.Instance().GetMonster(BossNums[random.Next(0, BossNums.Count)]));               
-               currentMobs.Add(ObjectManager.Instance().GetMonster(MobNums[random.Next(0, MobNums.Count)]));
+                if (i == maxFloor - 1)
+                {
+                    currentMobs.Add(ObjectManager.Instance().GetMonster(BossNums[random.Next(0, BossNums.Count)]));
+                    break;
+                }
+                currentMobs.Add(ObjectManager.Instance().GetMonster(MobNums[random.Next(0, MobNums.Count)]));
             } //몬스터 세팅
             Monster mob = currentMobs[mobCount];
             mob.Init();//몬스터는 꼭 초기화가 되어야 사용가능
@@ -169,6 +172,9 @@ namespace TextRPG_TeamProject2nd.Manager
                 UIManager.DisplayDungeonInfo(map, mobCount);
                 UIManager.DisplayEnemyInfo(mob);
                 UIManager.DisplayPlayerInfoDungeon(player);*/
+                Console.WriteLine($"현재 남은 몬스터 : {maxFloor - mobCount}");
+                Console.WriteLine($"[{mob.GetInfo().name}] HP:{mob.GetInfo().hp}/{mob.GetInfo().maxHp}");
+                Console.WriteLine($"[{player.GetInfo().name}] HP:{player.GetInfo().hp}/{player.GetInfo().maxHp}");
 
                 isTurn = true;
                 while (true) //플레이어
@@ -176,7 +182,7 @@ namespace TextRPG_TeamProject2nd.Manager
                     //UIManager.PositionCursorToInput();
                     Console.WriteLine("0턴넘기기 1스킬 2아이템");
                     int PlayerInput = InputKey();
-                    if (PlayerInput == 0 || player.GetInfo().actionPoint < 0) break;
+                    if (PlayerInput == 0) break;
 
                     if (PlayerInput == 1)
                     {
@@ -197,7 +203,7 @@ namespace TextRPG_TeamProject2nd.Manager
                         }
                         else if (skills[SkillInput].type == SKILLTYPE.HEAL && !(player.GetInfo().actionPoint < 0))
                         {
-                            int val = player.UseSkill(SkillInput, null);
+                            int val = player.UseSkill(SkillInput, mob);
                             Console.WriteLine($"플레이어는 {val}만큼 회복했다.");
                         }
                     }
@@ -207,13 +213,58 @@ namespace TextRPG_TeamProject2nd.Manager
                         Console.WriteLine("당신은 " + player.UseItem() + "만큼 회복했습니다.");
                         continue;
                     }
-                   
+
+                    Console.ReadLine();
                 }
 
                 isTurn = false;
-                while (true) //몬스터
+                if(true) //몬스터
                 {
+                    int val = mob.UseSkill(player);
+                    Console.WriteLine($"몬스터가 당신에게 {val}만큼의 피해를 주었다!");
+                    Console.ReadLine();
+                }
 
+                if(mob.GetInfo().hp <= 0)
+                {
+                    mobCount++;
+                    if(mobCount >= maxFloor)
+                    {
+                        Console.WriteLine("모든 적 처리");
+                        Console.ReadLine();
+                        ChangeScene(SCENESTATE.VILLAGE);
+                        return;
+                    }
+
+                    {
+                        Console.WriteLine("몬스터가 사망했습니다.");
+                        Item item = mob.Drops();
+                        if(item.id != -1)
+                        {
+                            Console.WriteLine($"{item.name}을 얻었다!");
+                            player.PushInven(item);
+                        }
+                        int moneyDrop = 20 + (mob.GetInfo().level * 3);
+                        int exp = 20 + (mob.GetInfo().level * 2);
+                        player.GetInfo().money += moneyDrop;
+                        Console.WriteLine(moneyDrop + "만큼의 골드를 얻었다!");
+                        Console.WriteLine(exp + "만큼의 경험치를 얻었다!");
+                        Console.ReadLine();
+
+                        mob = currentMobs[mobCount];
+                        mob.Init();
+                    }
+                }
+
+                if(player.GetInfo().hp <= 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("사망..");
+                    ChangeScene(SCENESTATE.MAIN);
+                    currentMobs.Clear();
+                    Console.ReadLine();
+                    Console.Clear();
+                    return;
                 }
             }
         }
