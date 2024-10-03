@@ -16,14 +16,16 @@ namespace TextRPG_TeamProject2nd.Object
                 skillList.Add(ObjectManager.Instance().GetSkill(id));
         }
 
-        public int UseSkill(Player player)
+        public int UseSkill(Player player, out Skill _skill)
         {
+            _skill = null;
             if (mobInfo == null || skillList == null)
                 return 0;
 
             Random random = new Random();
             int range = mobInfo.skillList.Count;
             int index = random.Next(0, range);
+            _skill = skillList[index];
 
             Skill skill = skillList[index];
             if(skill.type == SKILLTYPE.ATTACK)
@@ -34,8 +36,10 @@ namespace TextRPG_TeamProject2nd.Object
             }
             else
             {
-                mobInfo.hp += skill.power;
-                return skill.power;
+                int recover = Math.Min(mobInfo.maxHp - mobInfo.hp, skill.power);
+
+                mobInfo.hp += recover;
+                return recover;
             }
                 
         }

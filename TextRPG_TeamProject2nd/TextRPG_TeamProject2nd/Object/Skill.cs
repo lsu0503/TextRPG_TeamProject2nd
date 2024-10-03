@@ -19,6 +19,7 @@ namespace TextRPG_TeamProject2nd.Object
             ret.name             = name;
             ret.desc             = desc;
             ret.power            = power;
+            ret.cost             = cost;
             return ret;
         }
 

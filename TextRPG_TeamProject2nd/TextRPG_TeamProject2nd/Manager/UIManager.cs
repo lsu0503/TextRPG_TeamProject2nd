@@ -36,7 +36,7 @@ namespace TeamProjectBin
         }
 
         // 우측 플레이어 정보를 그리는 함수.
-        public void DisplayPlayerInfo(Player _player, int yPos)
+        public int DisplayPlayerInfo(Player _player, int yPos)
         {
             PlayerInfo playerInfo = _player.GetInfo();
             List<string> tempStringList = new List<string>();
@@ -45,8 +45,10 @@ namespace TeamProjectBin
             int tempLength;
             int frameLeft = 0;
 
-            tempStringList.Add(String.Format(playerInfo.name + $"     Lv.{playerInfo.level}" + $"[{playerInfo.exp / (float)playerInfo.maxExp,5:N2}]"));
-            tempStringList.Add(String.Format($"HP: {playerInfo.hp,4} / {playerInfo.maxHp,-4}     AP: {_player.GetInfo().actionPoint}"));
+            tempStringList.Add(String.Format(playerInfo.name + $"     Lv.{playerInfo.level}" + $"[{(playerInfo.exp / (float)playerInfo.maxExp) * 100,5:N2}%]"));
+            tempStringList.Add(String.Format($"HP: {playerInfo.hp,4} / {playerInfo.maxHp,-4}"));
+            tempStringList.Add(String.Format($"AP: {_player.GetActionPoint()}"));
+            tempStringList.Add(String.Format($""));
             tempStringList.Add(String.Format($"공격력: {playerInfo.attack,-3}"));
             tempStringList.Add(String.Format($"방어력: {playerInfo.defence,-3}"));
             tempStringList.Add(String.Format($"행동력: {playerInfo.actionPoint,-3}"));
@@ -75,11 +77,8 @@ namespace TeamProjectBin
                 Console.SetCursorPosition(consoleWidth - frameLeft, yPos + i);
                 Console.Write(tempStringList[i]);
             }
-        }
 
-        public void DisplayPlayerInfoVillage(Player _player)
-        {
-            DisplayPlayerInfo(_player, 0);
+            return frameLeft;
         }
 
         // 커서 위치 최하단(입력 창)으로 옮기는 함수.
@@ -116,7 +115,7 @@ namespace TeamProjectBin
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("\n이름을 입력 해 주십시오.");
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         // 종족 선택 화면
@@ -190,15 +189,10 @@ namespace TeamProjectBin
                         break;
                     case ITEMTYPE.CONSUMABLE:
                         Console.CursorLeft = 35;
-                        Console.Write($"| ");
-                        if (ObjectManager.Instance().GetSkill(storeList[i].skill[0]).type == 0)
-                            Console.Write($"투척무기  ");
-                        else
-                            Console.Write($"의 약 품  ");
-                        Console.WriteLine($"위력: {ObjectManager.Instance().GetSkill(storeList[i].skill[0]).power}");
+                        Console.WriteLine($"| 의약품   회복량: {storeList[i].amount}");
                         break;
                 }
-                Console.WriteLine($"| {storeList[i].desc}");
+                Console.WriteLine();
             }
             
             Console.WriteLine();
@@ -210,7 +204,7 @@ namespace TeamProjectBin
         public void DisplayShopBuyText(Item _itemBought)
         {
             Console.SetCursorPosition(0, Console.WindowHeight - 4);
-            Console.WriteLine($"{_itemBought.name}을(를( {_itemBought.value} Gold에 구매하셨습니다.");
+            Console.WriteLine($"{_itemBought.name}을(를) {_itemBought.value} Gold에 구매하셨습니다.");
             Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
         }
 
@@ -243,14 +237,10 @@ namespace TeamProjectBin
                         break;
                     case ITEMTYPE.CONSUMABLE:
                         Console.CursorLeft = 35;
-                        Console.Write($"| ");
-                        if (ObjectManager.Instance().GetSkill(invenList[i].skill[0]).type == 0)
-                            Console.Write($"투척무기  ");
-                        else
-                            Console.Write($"의 약 품  ");
-                        Console.WriteLine($"위력: {ObjectManager.Instance().GetSkill(invenList[i].skill[0]).power}");
+                        Console.WriteLine($"| 의약품   회복량: {invenList[i].amount}");
                         break;
                 }
+                Console.WriteLine();
             }
 
             Console.WriteLine();
@@ -284,26 +274,22 @@ namespace TeamProjectBin
                 switch (invenList[i].type)
                 {
                     case ITEMTYPE.WEAPON:
-                        Console.CursorLeft = 35;
+                        Console.CursorLeft = 25;
                         Console.Write($"| 공격력: {invenList[i].attack,3}  방어력: {invenList[i].defence,3}");
                         for (int j = 0; j < invenList[i].skill.Count; j++)
                             Console.Write($"    스킬 {j}: {ObjectManager.Instance().GetSkill(invenList[i].skill[j]).name}");
                         Console.WriteLine();
                         break;
                     case ITEMTYPE.ARMOR:
-                        Console.CursorLeft = 35;
+                        Console.CursorLeft = 25;
                         Console.WriteLine($"| 공격력: {invenList[i].attack,3}  방어력: {invenList[i].defence,3} ");
                         break;
                     case ITEMTYPE.CONSUMABLE:
-                        Console.CursorLeft = 35;
-                        Console.Write($"| ");
-                        if (ObjectManager.Instance().GetSkill(invenList[i].skill[0]).type == 0)
-                            Console.Write($"투척무기  ");
-                        else
-                            Console.Write($"의 약 품  ");
-                        Console.WriteLine($"위력: {ObjectManager.Instance().GetSkill(invenList[i].skill[0]).power}");
+                        Console.CursorLeft = 25;
+                        Console.WriteLine($"| 의약품   회복량: {invenList[i].amount}");
                         break;
                 }
+                Console.WriteLine();
             }
 
             Console.WriteLine();
@@ -325,12 +311,15 @@ namespace TeamProjectBin
 
             Console.WriteLine("[멍뭉이 조사원]: 안녕하세요! 현재 귀하께서는 하단의 임무를 수행하고 계십니다!");
             Console.WriteLine("                 도기독스 보험단이랑 연계되는 임무라서 임무를 바꾸실 수는 없어요!");
-            Console.WriteLine("                 조금 늦게 하셔도 좋으니까, 차분히 진행해 주세요!\n");
+            Console.WriteLine("                 조금 늦게 하셔도 좋으니까, 차분히 진행해 주세요!\n\n\n");
 
             // 퀘스트 내용 표시
             Console.WriteLine($"{quest.questName}");
             Console.WriteLine("------------------------------------------------------------------------------");
-            Console.WriteLine($"{quest.questDesc}");
+
+            string[] descStrings = quest.questDesc.Split("@");
+            for(int i = 0; i < descStrings.Length; i++)
+                Console.WriteLine($"{descStrings[i]}");
             Console.WriteLine();
             Console.WriteLine($"{ObjectManager.Instance().GetMonster(quest.questTargetId).GetInfo().name} {quest.questTargetAmount}마리 잡기. [{quest.questProgressAmount} / {quest.questTargetAmount}]");
             Console.Write($"보상: ");
@@ -395,64 +384,68 @@ namespace TeamProjectBin
         }
         
         /* 던전 내부 관련 UI */
-        // 플레이어 정보 출력 함수
-        public void DisplayPlayerInfoDungeon(Player _player)
-        {
-            DisplayPlayerInfo(_player, 8);
-        }
-
         // 전투 행동 선택 라인 출력
-        public void DisplayActionLine()
+        public void DisplayActionLine(Player _player)
         {
+            Item[] playerEquiped = _player.GetPlayerEq();
+
             Console.SetCursorPosition(0, Console.WindowHeight - 4);
             Console.Write("[1] 스킬    ");
-            Console.Write("[2] 아이템"); // 아이템 관련 요소 추가 시 추가 [현재는 안보임.]
+            Console.Write($"[2] {playerEquiped[2].name}");
+            if (playerEquiped[2].name != "없음")
+                Console.Write($"[{_player.GetConsumeCount()}]");
             Console.WriteLine("    [0] 턴 넘기기");
         }
 
         // 스킬 선택 라인 출력
         public void DisplaySkillLine(Player _player)
         {
-            Item playerWeapon = ObjectManager.Instance().GetItem(_player.GetInfo().weaponId);
+            List<Skill> playerSkillList = _player.GetPlayerSkillList();
 
-            for (int i = 0; i < playerWeapon.skill.Count; i++)
+            Console.SetCursorPosition(0, Console.WindowHeight - 4);
+            for (int i = 0; i < playerSkillList.Count; i++)
             {
-                Console.Write($"[{i + 1}] {ObjectManager.Instance().GetSkill(playerWeapon.skill[i]).name, 8}   ");
+                Console.Write($"{$"[{i + 1}] {playerSkillList[i].name} [AP {playerSkillList[i].cost}]", -25}");
             }
+            Console.WriteLine("[0] 취소");
+        }
+
+        public void DisplayInputReady()
+        {
+            Console.SetCursorPosition(0, Console.WindowHeight - 3);
+            Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
+        }
+
+        public void DisplayApShotage()
+        {
+            Console.SetCursorPosition(0, Console.WindowHeight - 4);
+            Console.WriteLine("AP가 모자랍니다.");
+            Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
         }
 
         // 던전 정보 출력 함수
-        public void DisplayDungeonInfo(Map _map, int _floor)
+        public void DisplayDungeonInfo(Map _map, int _floor, int frameLeft)
         {
-            int frameLeft = Console.WindowWidth - 40;
-            Console.SetCursorPosition(frameLeft, 0);
+            int windowWidth = Console.WindowWidth - 1;
+            
+            Console.SetCursorPosition(windowWidth - frameLeft, 0);
             Console.Write($"{_map.mapInfo.name}");
             
-            Console.SetCursorPosition(frameLeft, 1);
-            Console.Write($"[{_floor} / {_map.mapInfo.floor}]");
+            Console.SetCursorPosition(windowWidth - frameLeft, 1);
+            Console.Write($"[{_floor + 1} / {_map.mapInfo.floor}]");
         }
 
         // 적 정보 출력 함수
-        public void DisplayEnemyInfo(Monster _monster)
+        public void DisplayEnemyInfo(Monster _monster, int frameLeft)
         {
-            int frameTop = 5;
-            int frameLeft;
+            int frameTop = 3;
             int windowWidth = Console.WindowWidth - 1;
-
-            // UTF-8일 경우 한글은 한 자에 3Byte로 구성된다. 이를 참고하여 수식을 구성했다.
-            // [p.s. 본 프로젝트와는 관계 없지만, euc-kr일 경우에는 한글은 한 자에 2Byte로 구성된다.]
-            int wordLengthByte = Encoding.Default.GetByteCount(_monster.GetInfo().name);
-            int tempLength = ((wordLengthByte - _monster.GetInfo().name.Length) / 2) + _monster.GetInfo().name.Length;
-            if (tempLength > 9)
-                frameLeft = tempLength + 5;
-            else
-                frameLeft = 14;
 
             Console.SetCursorPosition(windowWidth - frameLeft, frameTop);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write($"{_monster.GetInfo().name}"); // 몬스터 이름 빨간색으로 표시
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write($" [{_monster.GetInfo().level, 2}]"); // 몬스터 레벨 일단 노란색으로.
+            Console.Write($" [Lv.{_monster.GetInfo().level, 2}]"); // 몬스터 레벨 일단 노란색으로.
 
             Console.SetCursorPosition(windowWidth - frameLeft, frameTop + 1);
             if (_monster.GetInfo().hp > 0)
@@ -461,7 +454,7 @@ namespace TeamProjectBin
                 Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write($"HP {_monster.GetInfo().hp,4} / {_monster.GetInfo().maxHp,-4}"); // 몬스터 체력 [생존 시 흰색 / 사망 시 회색]
 
-            Console.ForegroundColor = ConsoleColor.White; // 글자 색 리셋.
+            Console.ForegroundColor = ConsoleColor.Gray; // 글자 색 리셋.
         }
         
         //// 현재 턴 정보 출력 함수
@@ -509,7 +502,7 @@ namespace TeamProjectBin
             logList.Add("");
         }
 
-        public void CreateLogBattle(Player _player, Monster _monster, Skill _skill, int _power, int _skillType)
+        public void CreateLogAction(Player _player, Monster _monster, Skill _skill, int _power, int _skillType)
         {
             if (GameManager.Instance().GetTurn())
             {
@@ -517,7 +510,7 @@ namespace TeamProjectBin
                 if(_skillType == 0)
                     logList.Add($"[{_monster.GetType().Name}]은(는) {_power}의 피해를 받았다!");
                 else if( _skillType == 1)
-                    logList.Add($"[{_player.GetType().Name}]은(는) {_skill.name}만큼 회복했다!");
+                    logList.Add($"[{_player.GetType().Name}]은(는) {_power}만큼 회복했다!");
             }
 
             else
@@ -526,21 +519,30 @@ namespace TeamProjectBin
                 if (_skillType == 0)
                     logList.Add($"[{_player.GetType().Name}]은(는) {_power}의 피해를 받았다!");
                 else if (_skillType == 1)
-                    logList.Add($"[{_monster.GetType().Name}]은(는) {_skill.name}만큼 회복했다!");
+                    logList.Add($"[{_monster.GetType().Name}]은(는) {_power}만큼 회복했다!");
             }
 
             logList.Add("");
         }
 
+        public void CreateLogItem(Player _player, Monster _monster, int _power)
+        {
+            Item[] playerEquiped = _player.GetPlayerEq();
+
+            logList.Add($"{_monster.GetType().Name}]은(는) [{playerEquiped[2].name}]을(를) 사용했다!");
+            logList.Add($"[{_player.GetType().Name}]은(는) {_power}만큼 회복했다!");
+            logList.Add("");
+        }
+
         // 승리 로그 생성 함수
-        public void CreateLogVictory(Monster _monster, int _itemId, int reward)
+        public void CreateLogVictory(Monster _monster, Item _item, int _money, int _exp)
         {
             logList.Add($"[{_monster.GetType().Name}]과의 전투에서 승리하였다!");
             
-            if (_itemId >= 0)
-                logList.Add($"[{ObjectManager.Instance().GetItem(_itemId)}]을(를) 습득하였다.");
+            if (_item.id != -1)
+                logList.Add($"[{_item.name}]을(를) 습득하였다.");
             
-            logList.Add($"돈과 경험치를 {reward}만큼 습득하였다!");
+            logList.Add($"{_money} Gold와 경험치 {_exp}를 얻었다!");
 
             logList.Add("");
         }
@@ -556,6 +558,18 @@ namespace TeamProjectBin
         {
             logList.Add($"패배하였다...");
             logList.Add("");
+        }
+
+        public void CreateLogComplete(Map _map)
+        {
+            logList.Add($"{_map.mapInfo.name}을 모두 재패하였다!");
+            logList.Add($"마을로 돌아가서 승전보를 울리자!");
+            logList.Add("");
+        }
+
+        public void ClearLogList()
+        {
+            logList.Clear();
         }
         //-------------------------------------------------
         private List<string> logList = new List<string>();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using TextRPG_TeamProject2nd.Manager;
 using TextRPG_TeamProject2nd.Utils;
 
@@ -22,11 +23,13 @@ namespace TextRPG_TeamProject2nd.Object
         {
             isAttack = mob.Damaged;
             SKILLTYPE type = skillList[index].type;
-            
+            actionPoint -= skillList[index].cost;
+
             if (playerInfo != null && (type == SKILLTYPE.ATTACK))
             {
-                isAttack?.Invoke((playerInfo.attack * skillList[index].power) / mob.GetInfo().defence); //attack
-                return (playerInfo.attack * skillList[index].power) / mob.GetInfo().defence;
+                int damage = (int)((playerInfo.attack * skillList[index].power) * MathF.Pow(1.2f, playerInfo.level) / mob.GetInfo().defence);
+                isAttack?.Invoke(damage); //attack
+                return damage;
             }
             else if (playerInfo != null && type == SKILLTYPE.HEAL)
             {
@@ -49,21 +52,38 @@ namespace TextRPG_TeamProject2nd.Object
                 playerInfo.hp = Math.Max(0, playerInfo.hp - damage);
         }
 
-        public void GetExp(int val)
+        public void OnNextTurn()
         {
-            if ((playerInfo.exp + val) > playerInfo.maxHp)
+            if (actionPoint >= 0)
+                actionPoint = playerInfo.actionPoint;
+            else
+                actionPoint += playerInfo.actionPoint;
+        }
+
+        public bool GetExp(int val)
+        {
+            bool result = false;
+
+            playerInfo.exp += val;
+
+            while (playerInfo.exp >= playerInfo.maxExp)
             {
-                playerInfo.exp = 0;
+                playerInfo.exp -= playerInfo.maxExp;
                 IncreaseLevel();
+                result = true;
             }
+
+            return result;
         }
         public void IncreaseLevel()
         {
             if (playerInfo == null)
                 return;
 
-            playerInfo.maxExp = baseMaxExp + playerInfo.level * 25;
-            //TODO : 플레이어가 레벨업 하면 상승하는 스탯
+            playerInfo.level++;
+            playerInfo.maxExp += playerInfo.level * 25;
+
+            playerInfo.maxHp = (int)(playerInfo.maxHp * 1.2f);
             
         }
 
@@ -162,10 +182,16 @@ namespace TextRPG_TeamProject2nd.Object
         public void BackVill()
         {
             ConsumeCount = 3;
-            if(playerInfo != null)
+            if (playerInfo != null)
+            {
                 playerInfo.hp = playerInfo.maxHp;
+                actionPoint = playerInfo.actionPoint;
+            }
         }
 
+        public int GetActionPoint() { return actionPoint; }
+        public int GetConsumeCount() { return ConsumeCount; }
+        public Skill GetSkill(int index) { return skillList[index]; }
         public List<Skill> GetPlayerSkillList() {return skillList ?? new List<Skill>(); }
         public List<Item> GetPlayerInvenList() { return inven ?? new List<Item>(); }
         public PlayerInfo GetInfo()
@@ -242,6 +268,13 @@ namespace TextRPG_TeamProject2nd.Object
             return quest;
         }
 
+        public void SetQuest(Quest _quest)
+        {
+            quest = _quest;
+            playerInfo.questId = quest.questId;
+            playerInfo.questProgress = quest.questProgressAmount;
+        }
+
         public Item[] GetPlayerEq()
         {
             Item[] ret = new Item[3];
@@ -296,7 +329,7 @@ namespace TextRPG_TeamProject2nd.Object
 
         int baseMaxExp = 100;
         int ConsumeCount = 3;
-
+        int actionPoint = 0;
         //==
         public event UseSkillCallback? isAttack;
         private List<Item>? inven = new List<Item>();
