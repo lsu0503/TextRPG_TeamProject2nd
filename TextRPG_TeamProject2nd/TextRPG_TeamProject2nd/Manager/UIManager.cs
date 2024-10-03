@@ -53,16 +53,12 @@ namespace TeamProjectBin
             tempStringList.Add(String.Format($""));
             tempStringList.Add(String.Format($"소지금: {playerInfo.money}"));
             tempStringList.Add(String.Format($""));
-            
-            if (ObjectManager.Instance().GetItem(playerInfo.weaponId) != null)
-                tempStringList.Add($"무  기: {ObjectManager.Instance().GetItem(playerInfo.weaponId).name}");
-            else
-                tempStringList.Add($"무  기: ----------------");
 
-            if (ObjectManager.Instance().GetItem(playerInfo.armorId) != null)
-                tempStringList.Add($"방어구: {ObjectManager.Instance().GetItem(playerInfo.armorId).name}");
-            else
-                tempStringList.Add($"방어구: ----------------");
+            Item[] EquipArray = _player.GetPlayerEq();
+
+            tempStringList.Add($"무  기: {EquipArray[0].name}");
+            tempStringList.Add($"방어구: {EquipArray[1].name}");
+            tempStringList.Add($"회복약: {EquipArray[2].name}");
 
             for (int i = 0; i < tempStringList.Count; i++)
             {
@@ -344,7 +340,7 @@ namespace TeamProjectBin
             Console.WriteLine($"{quest.rewardGold} Gold, exp {quest.rewardGold}\n");
 
             if (quest.CheckProgress())
-                Console.WriteLine("[1] 퀘스트 보고");
+                Console.WriteLine("[1] 퀘스트 보고    ");
 
             Console.WriteLine("[0] 나가기");
 
@@ -440,7 +436,8 @@ namespace TeamProjectBin
         public void DisplayEnemyInfo(Monster _monster)
         {
             int frameTop = 5;
-            int frameLeft = Console.WindowWidth - 30;
+            int frameLeft;
+            int windowWidth = Console.WindowWidth - 1;
 
             // UTF-8일 경우 한글은 한 자에 3Byte로 구성된다. 이를 참고하여 수식을 구성했다.
             // [p.s. 본 프로젝트와는 관계 없지만, euc-kr일 경우에는 한글은 한 자에 2Byte로 구성된다.]
@@ -451,13 +448,13 @@ namespace TeamProjectBin
             else
                 frameLeft = 14;
 
-            Console.SetCursorPosition(frameLeft, frameTop);
+            Console.SetCursorPosition(windowWidth - frameLeft, frameTop);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write($"{_monster.GetInfo().name}"); // 몬스터 이름 빨간색으로 표시
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write($" [{_monster.GetInfo().level, 2}]"); // 몬스터 레벨 일단 노란색으로.
 
-            Console.SetCursorPosition(frameLeft, frameTop + 1);
+            Console.SetCursorPosition(windowWidth - frameLeft, frameTop + 1);
             if (_monster.GetInfo().hp > 0)
                 Console.ForegroundColor = ConsoleColor.White;
             else
