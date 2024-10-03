@@ -205,7 +205,11 @@ namespace TextRPG_TeamProject2nd.Object
             if(armor != null)
                 playerInfo.armorId = armor.id;
 
+            if(item != null)
+                playerInfo.consumeId = item.id;
+
             FileManager.Instance().SavePlayer();
+            SaveInven();
         }
         public void Load()
         {
@@ -220,6 +224,7 @@ namespace TextRPG_TeamProject2nd.Object
 
             weapon = ObjectManager.Instance().GetItem(playerInfo.weaponId);
             armor = ObjectManager.Instance().GetItem(playerInfo.armorId);
+            item = ObjectManager.Instance().GetItem(playerInfo.consumeId);
 
             if(weapon != null)
                 foreach(int id in weapon.skill)
@@ -229,6 +234,7 @@ namespace TextRPG_TeamProject2nd.Object
             
             quest = ObjectManager.Instance().GetQuest(playerInfo.questId);
             quest.questProgressAmount = playerInfo.questProgress;
+            LoadInven();
         }
 
         public Quest GetCurrentQuest()
@@ -264,14 +270,16 @@ namespace TextRPG_TeamProject2nd.Object
         void LoadInven()
         {
             StreamReader reader = new StreamReader(path + "\\INVEN.spam");
-            string outData = reader.ReadToEnd();
+            string outData = reader.ReadLine();
             string[] inData = outData.Split(",");
 
             foreach(string data in inData)
             {
+                if (data == "") break;
                 Item item = ObjectManager.Instance().GetItem(int.Parse(data));
                 inven.Add(item);
             }
+            reader.Close();
         }
 
         //-----------------

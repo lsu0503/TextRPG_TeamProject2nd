@@ -12,6 +12,7 @@ namespace TextRPG_TeamProject2nd.Utils
         public string? race    { get; set; }
         public int weaponId    { get; set; }
         public int armorId     { get; set; }
+        public int consumeId   { get; set; }
         public int level       { get; set; }
         public int hp          { get; set; }
         public int maxHp       { get; set; }

@@ -28,6 +28,9 @@ namespace TextRPG_TeamProject2nd.Object
             ret.attack      = attack;
             ret.defence     = defence;
             ret.name        = name;
+            ret.desc        = desc;
+            ret.value       = value;
+            ret.amount      = amount;
             ret.skill       = skill;
             ret.type        = type;
 
