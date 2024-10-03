@@ -58,6 +58,8 @@ namespace TextRPG_TeamProject2nd.Manager
                 outData += info.maxExp + ",";
                 outData += info.money + ",";
                 outData += info.race + ",";
+                outData += info.questId + ",";
+                outData += info.questProgress + ",";
 
             }
           
@@ -90,6 +92,8 @@ namespace TextRPG_TeamProject2nd.Manager
             player.GetInfo().maxExp = int.Parse(inData[10]);
             player.GetInfo().money = int.Parse(inData[11]);
             player.GetInfo().race = inData[12];
+            player.GetInfo().questId = int.Parse(inData[13]);
+            player.GetInfo().questProgress = int.Parse(inData[14]);
 
             streamReader.Close();
             return true;      
