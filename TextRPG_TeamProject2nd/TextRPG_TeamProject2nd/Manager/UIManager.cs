@@ -328,7 +328,7 @@ namespace TeamProjectBin
             Quest quest = _player.GetCurrentQuest();
 
             Console.WriteLine("[멍뭉이 조사원]: 안녕하세요! 현재 귀하께서는 하단의 임무를 수행하고 계십니다!");
-            Console.WriteLine("                 도기독스 모험자 보험이랑 연계되는 임무라서 임무를 바꾸실 수는 없어요!");
+            Console.WriteLine("                 도기독스 보험단이랑 연계되는 임무라서 임무를 바꾸실 수는 없어요!");
             Console.WriteLine("                 조금 늦게 하셔도 좋으니까, 차분히 진행해 주세요!\n");
 
             // 퀘스트 내용 표시
@@ -348,6 +348,18 @@ namespace TeamProjectBin
 
             Console.WriteLine("[0] 나가기");
 
+        }
+
+        // 퀘스트 보상 습득 확인
+        public void DisplayQuestClear(Quest _quest)
+        {
+            Console.SetCursorPosition(0, Console.WindowHeight - 5);
+            Console.WriteLine($"{_quest.questName} 미션을 완수하셨습니다.");
+            Item tempItem = ObjectManager.Instance().GetItem(_quest.rewardItemId);
+            if (tempItem != null)
+                Console.Write($"{tempItem.name}, ");
+            Console.WriteLine($"{_quest.rewardGold} Gold, Exp {_quest.rewardGold}를 습득하였습니다.");
+            Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
         }
 
         // 던전 진입 UI
