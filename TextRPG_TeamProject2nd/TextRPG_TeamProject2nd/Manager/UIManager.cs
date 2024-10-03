@@ -191,11 +191,11 @@ namespace TeamProjectBin
                     case ITEMTYPE.CONSUMABLE:
                         Console.CursorLeft = 35;
                         Console.Write($"| ");
-                        if (ObjectManager.Instance().GetSkill(storeList[i].skill[0]).type == 0)
-                            Console.Write($"투척무기  ");
-                        else
+                        /*if (ObjectManager.Instance().GetSkill(storeList[i].skill[0]).type == 0)
+                            Console.Write($"투척무기  ");*/
+                        
                             Console.Write($"의 약 품  ");
-                        Console.WriteLine($"위력: {ObjectManager.Instance().GetSkill(storeList[i].skill[0]).power}");
+                        //Console.WriteLine($"위력: {ObjectManager.Instance().GetSkill(storeList[i].skill[0]).power}");
                         break;
                 }
                 Console.WriteLine($"| {storeList[i].desc}");

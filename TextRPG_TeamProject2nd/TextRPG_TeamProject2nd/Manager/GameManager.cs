@@ -12,6 +12,7 @@ namespace TextRPG_TeamProject2nd.Manager
         STORE,
         INVEN,
         QUEST,
+        CONNECT,
         END,
     }
 
@@ -32,6 +33,7 @@ namespace TextRPG_TeamProject2nd.Manager
             InitStore();
             player = new Player();
             UIManager = UIManager.Instance();
+            connector = new Connector();
         }
         //---------------------------------------------------------------
         public void Update()
@@ -58,6 +60,9 @@ namespace TextRPG_TeamProject2nd.Manager
                     break;
                 case SCENESTATE.QUEST:
                     SceneOuest();
+                    break;
+                case SCENESTATE.CONNECT:
+                    SceneConnect();
                     break;
                 case SCENESTATE.END:
                     //SAVE()
@@ -129,6 +134,7 @@ namespace TextRPG_TeamProject2nd.Manager
             else if (input == 2) ChangeScene(SCENESTATE.INVEN);
             else if (input == 3) ChangeScene(SCENESTATE.QUEST);
             else if (input == 4) ChangeScene(SCENESTATE.FILED);
+            else if (input == 5) ChangeScene(SCENESTATE.CONNECT);
             else if (input == 0) { player.Save(); Environment.Exit(0); }
         }
         private void SceneFiled()
@@ -349,6 +355,122 @@ namespace TextRPG_TeamProject2nd.Manager
             if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
 
         }
+        private void SceneConnect()
+        {
+            Console.Clear();
+            Console.WriteLine("[0]마을 [1]나눔열기 [2]나눔참가");
+            int key = InputKey();
+            if (key == 0) { ChangeScene(SCENESTATE.VILLAGE); return; }
+            
+            if(key == 1)
+            {
+                try
+                {
+                    Console.WriteLine("아이피를 입력하세요:");
+                    string ip = InputLine();
+                    Console.WriteLine("상대방을 기다립니다...");
+                    Connector.Instance().HostStart(ip);
+                    while (true)
+                    {
+                        Console.Clear();
+                        int index = 1;
+                        Console.WriteLine("보낼 아이템을 선택하세요. [-1:종료] [0:아이템없이] [아이템번호:보내기]");
+                        foreach (Item it in player.GetPlayerInvenList())
+                        {
+                            Console.WriteLine($"{index} : {it.name}");
+                            index++;
+                        }
+                        index = InputKey();
+                        Item sendItem = player.GetPlayerInvenList()[index - 1];
+
+                        Console.WriteLine("메세지를 입력하세요.");
+                        string mess = InputLine();
+                        Connector.Instance().Send(player.GetInfo().name, sendItem.id, mess);
+                        //--------------------------------------
+
+                        Console.WriteLine("상대방의 응답을 기다립니다..");
+                        string[] packet = Connector.Instance().Recv();
+                        Item item = ObjectManager.Instance().GetItem(int.Parse(packet[1]));
+                        Console.WriteLine($"{packet[0]}이(가) {item.name}을 보냈습니다.");
+                        Console.WriteLine($"{packet[0]}:{packet[2]}");
+                        Console.WriteLine($"{item.name}이(가) 인벤토리에 추가 되었습니다.");
+                        player.PushInven(item);
+                        Console.WriteLine("[0]:마을로 가기 [1]:계속하기");
+                        int input = InputKey();
+                        if (input == 0)
+                        {
+
+                            ChangeScene(SCENESTATE.VILLAGE);
+                            Connector.Instance().Close();
+                            break;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("연결 종료..");
+                    Console.ReadLine();
+                    ChangeScene(SCENESTATE.VILLAGE);
+                    Connector.Instance().Close();
+                    return;
+                }
+            }
+            if(key == 2)
+            {
+                try
+                {
+                    Console.WriteLine("상대방의 아이피를 입력하세요.");
+                    string ip = InputLine();
+                    Console.WriteLine("접속중...");
+                    Connector.Instance().JoinStart(ip);
+                    while (true)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("상대방의 응답을 기다립니다..");
+                        string[] packet = Connector.Instance().Recv();
+                        Item item = ObjectManager.Instance().GetItem(int.Parse(packet[1]));
+                        Console.WriteLine($"{packet[0]}이(가) {item.name}을 보냈습니다.");
+                        Console.WriteLine($"{packet[0]}:{packet[2]}");
+                        Console.WriteLine($"{item.name}이(가) 인벤토리에 추가 되었습니다.");
+                        player.PushInven(item);
+                        Console.WriteLine("[0]:마을로 가기 [1]:계속하기");
+                        int input = InputKey();
+                        if (input == 0)
+                        {
+                            ChangeScene(SCENESTATE.VILLAGE);
+                            Connector.Instance().Close();
+                            break;
+                        }
+                        //-------------------------
+
+                        int index = 1;
+                        Console.WriteLine("보낼 아이템을 선택하세요. [-1:종료] [0:아이템없이] [아이템번호:보내기]");
+                        foreach (Item it in player.GetPlayerInvenList())
+                        {
+                            Console.WriteLine($"{index} : {it.name}");
+                            index++;
+                        }
+                        index = InputKey();
+                        Item sendItem = player.GetPlayerInvenList()[index - 1];
+
+                        Console.WriteLine("메세지를 입력하세요.");
+                        string mess = InputLine();
+                        Connector.Instance().Send(player.GetInfo().name, sendItem.id, mess);
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("연결 종료..");
+                    Console.ReadLine();
+                    ChangeScene(SCENESTATE.VILLAGE);
+                    Connector.Instance().Close();
+                    return;
+                }
+               
+            }
+
+        }
 
 
         //유틸
@@ -428,6 +550,6 @@ namespace TextRPG_TeamProject2nd.Manager
         private SCENESTATE sceneState = SCENESTATE.MAIN;
         private List<Item>? storeList = null;
         bool isTurn = false;
-
+        Connector? connector;
     }
 }
