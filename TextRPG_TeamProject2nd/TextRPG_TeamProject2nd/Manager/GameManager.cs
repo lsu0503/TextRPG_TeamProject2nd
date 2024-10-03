@@ -61,8 +61,7 @@ namespace TextRPG_TeamProject2nd.Manager
                     SceneOuest();
                     break;
                 case SCENESTATE.END:
-                    //SAVE()
-                    //TODO
+                    SceneEnd();
                     break;
             }
         }
@@ -131,7 +130,7 @@ namespace TextRPG_TeamProject2nd.Manager
             else if (input == 2) ChangeScene(SCENESTATE.INVEN);
             else if (input == 3) ChangeScene(SCENESTATE.QUEST);
             else if (input == 4) ChangeScene(SCENESTATE.FILED);
-            else if (input == 0) { player.Save(); Environment.Exit(0); }
+            else if (input == 0) ChangeScene(SCENESTATE.END);
         }
         private void SceneFiled()
         {
@@ -194,13 +193,14 @@ namespace TextRPG_TeamProject2nd.Manager
                                 if (inputAction > 0)
                                 {
                                     int SkillInput = inputAction - 1;
-                                    int val = player.UseSkill(SkillInput, mob);
+                                    bool isCrit;
+                                    int val = player.UseSkill(SkillInput, out isCrit, mob);
 
                                     if (skills[SkillInput].type == SKILLTYPE.ATTACK)
-                                        UIManager.CreateLogAction(player, mob, player.GetSkill(SkillInput), val, 0);
+                                        UIManager.CreateLogAction(player, mob, player.GetSkill(SkillInput), val, 0, isCrit);
 
                                     else if (skills[SkillInput].type == SKILLTYPE.HEAL)
-                                        UIManager.CreateLogAction(player, mob, player.GetSkill(SkillInput), val, 1);
+                                        UIManager.CreateLogAction(player, mob, player.GetSkill(SkillInput), val, 1, isCrit);
                                 }
                             }
 
@@ -226,12 +226,13 @@ namespace TextRPG_TeamProject2nd.Manager
                 if(!isTurn) //몬스터
                 {
                     Skill tempSkill;
-                    int val = mob.UseSkill(player, out tempSkill);
+                    bool isCrit;
+                    int val = mob.UseSkill(player, out tempSkill, out isCrit);
                     if (tempSkill.type == SKILLTYPE.ATTACK)
-                        UIManager.CreateLogAction(player, mob, tempSkill, val, 0);
+                        UIManager.CreateLogAction(player, mob, tempSkill, val, 0, isCrit);
 
                     else if (tempSkill.type == SKILLTYPE.HEAL)
-                        UIManager.CreateLogAction(player, mob, tempSkill, val, 1);
+                        UIManager.CreateLogAction(player, mob, tempSkill, val, 1, isCrit);
 
                     SceneFieldUIDisplay(map, mob, mobCount);
                     UIManager.DisplayInputReady();
@@ -398,7 +399,7 @@ namespace TextRPG_TeamProject2nd.Manager
                 player.PushInven(reward);
                 player.GetExp(currentQuest.rewardGold);
                 player.GetInfo().money += currentQuest.rewardGold;
-                UIManager.DisplayQuestClear(currentQuest);
+                UIManager.DisplayQuestClear(currentQuest, player);
 
                 Quest nextQuest = ObjectManager.Instance().GetQuest(currentQuest.questId + 1);
                 
@@ -408,6 +409,18 @@ namespace TextRPG_TeamProject2nd.Manager
                 player.SetQuest(nextQuest);
 
             }
+        }
+        private void SceneEnd()
+        {
+            Console.Clear();
+            UIManager.DisplayTitle("세어가는 양 여관");
+            UIManager.DisplayExitGameVillage();
+            UIManager.DisplayPlayerInfo(player, 0);
+            UIManager.PositionCursorToInput();
+
+            int input = InputKey();
+            if (input == 0) { ChangeScene(SCENESTATE.VILLAGE); }
+            if (input == 1) { player.Save(); Environment.Exit(0); }
         }
 
 
@@ -464,8 +477,10 @@ namespace TextRPG_TeamProject2nd.Manager
             
             while (!int.TryParse(Console.ReadLine(), out input))
             {
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write(">>");
+                Console.Write(">>                                                              ");
+                Console.SetCursorPosition(2, Console.CursorTop);
                 Console.ResetColor();
             }
             

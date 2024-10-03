@@ -16,9 +16,10 @@ namespace TextRPG_TeamProject2nd.Object
                 skillList.Add(ObjectManager.Instance().GetSkill(id));
         }
 
-        public int UseSkill(Player player, out Skill _skill)
+        public int UseSkill(Player player, out Skill _skill, out bool _isCrit)
         {
             _skill = null;
+            _isCrit = false;
             if (mobInfo == null || skillList == null)
                 return 0;
 
@@ -30,9 +31,19 @@ namespace TextRPG_TeamProject2nd.Object
             Skill skill = skillList[index];
             if(skill.type == SKILLTYPE.ATTACK)
             {
-                int damage = (skillList[index].power * mobInfo.attack) / player.GetInfo().defence;
-                isAttack?.Invoke(damage);
-                return damage;
+                if (new Random().NextDouble() < 0.9f)
+                {
+                    int damage = (skillList[index].power * mobInfo.attack) / player.GetInfo().defence;
+                    if (new Random().NextDouble() < 0.15f)
+                    {
+                        _isCrit = true;
+                        damage = (int)(damage * 1.6f);
+                    }
+                    isAttack?.Invoke(damage);
+                    return damage;
+                }
+                else
+                    return -1;
             }
             else
             {

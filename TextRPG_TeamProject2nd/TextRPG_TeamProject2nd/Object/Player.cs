@@ -19,17 +19,29 @@ namespace TextRPG_TeamProject2nd.Object
         /// </summary>
         /// <param name="index"></param>
         /// <param name="mob"></param>
-        public int UseSkill(int index, Monster mob = null)
+        public int UseSkill(int index, out bool isCrit, Monster mob = null)
         {
             isAttack = mob.Damaged;
             SKILLTYPE type = skillList[index].type;
             actionPoint -= skillList[index].cost;
+            isCrit = false;
+
 
             if (playerInfo != null && (type == SKILLTYPE.ATTACK))
             {
-                int damage = (int)((playerInfo.attack * skillList[index].power) * MathF.Pow(1.2f, playerInfo.level) / mob.GetInfo().defence);
-                isAttack?.Invoke(damage); //attack
-                return damage;
+                if (new Random().NextDouble() < 0.9f)
+                {
+                    int damage = (int)((playerInfo.attack * skillList[index].power) * MathF.Pow(1.2f, playerInfo.level) / mob.GetInfo().defence);
+                    if (new Random().NextDouble() < 0.15f)
+                    {
+                        isCrit = true;
+                        damage = (int)(damage * 1.6f);
+                    }
+                    isAttack?.Invoke(damage); //attack
+                    return damage;
+                }
+                else
+                    return -1;
             }
             else if (playerInfo != null && type == SKILLTYPE.HEAL)
             {
@@ -218,8 +230,9 @@ namespace TextRPG_TeamProject2nd.Object
             playerInfo.race = race.name;
             playerInfo.name = name;
             playerInfo.money = 1000;
-            //quest.questId = ;
-            //quest.questProgressAmount = ;
+            playerInfo.questId = 0;
+            playerInfo.questProgress = 0;
+            quest = ObjectManager.Instance().GetQuest(playerInfo.questId);
         }
         public void Save()
         {
@@ -233,6 +246,9 @@ namespace TextRPG_TeamProject2nd.Object
 
             if(item != null)
                 playerInfo.consumeId = item.id;
+
+            if (quest != null)
+                playerInfo.questProgress = quest.questProgressAmount;
 
             FileManager.Instance().SavePlayer();
             SaveInven();

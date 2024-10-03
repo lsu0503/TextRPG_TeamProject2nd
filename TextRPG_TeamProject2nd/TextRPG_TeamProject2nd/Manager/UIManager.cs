@@ -115,7 +115,7 @@ namespace TeamProjectBin
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("\n이름을 입력 해 주십시오.");
-            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.ResetColor();
         }
 
         // 종족 선택 화면
@@ -336,14 +336,24 @@ namespace TeamProjectBin
         }
 
         // 퀘스트 보상 습득 확인
-        public void DisplayQuestClear(Quest _quest)
+        public void DisplayQuestClear(Quest _quest, Player _player)
         {
-            Console.SetCursorPosition(0, Console.WindowHeight - 5);
-            Console.WriteLine($"{_quest.questName} 미션을 완수하셨습니다.");
             Item tempItem = ObjectManager.Instance().GetItem(_quest.rewardItemId);
+            bool isLevelUp = _player.GetExp(_quest.rewardGold);
+
+            if(isLevelUp)
+                Console.SetCursorPosition(0, Console.WindowHeight - 6);
+            else
+                Console.SetCursorPosition(0, Console.WindowHeight - 5);
+
+            Console.WriteLine($"{_quest.questName} 미션을 완수하셨습니다.");
             if (tempItem != null)
                 Console.Write($"{tempItem.name}, ");
             Console.WriteLine($"{_quest.rewardGold} Gold, Exp {_quest.rewardGold}를 습득하였습니다.");
+
+            if(isLevelUp)
+                Console.WriteLine($"레벨업! {_player.GetInfo().name}은(는) Lv.{_player.GetInfo().level}이 되었다!");
+
             Console.WriteLine($" --- 진행하시려면 아무 버튼이나 눌러주세요. ---");
         }
 
@@ -379,8 +389,8 @@ namespace TeamProjectBin
             Console.WriteLine("");
             Console.WriteLine("<말이 끝날 기미가 안보인다. 빨리 용무를 마쳐야 할 거 같다.>\n");
 
-            Console.WriteLine();
-            Console.WriteLine("종료하시겠습니까? [Y - 예 / N - 아니오]");
+            Console.SetCursorPosition(0, Console.WindowHeight - 3);
+            Console.WriteLine("종료하시겠습니까? [1 - 예 / 0 - 아니오]");
         }
         
         /* 던전 내부 관련 UI */
@@ -454,7 +464,7 @@ namespace TeamProjectBin
                 Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write($"HP {_monster.GetInfo().hp,4} / {_monster.GetInfo().maxHp,-4}"); // 몬스터 체력 [생존 시 흰색 / 사망 시 회색]
 
-            Console.ForegroundColor = ConsoleColor.Gray; // 글자 색 리셋.
+            Console.ResetColor(); // 글자 색 리셋.
         }
         
         //// 현재 턴 정보 출력 함수
@@ -502,14 +512,23 @@ namespace TeamProjectBin
             logList.Add("");
         }
 
-        public void CreateLogAction(Player _player, Monster _monster, Skill _skill, int _power, int _skillType)
+        public void CreateLogAction(Player _player, Monster _monster, Skill _skill, int _power, int _skillType, bool _isCrit)
         {
             if (GameManager.Instance().GetTurn())
             {
                 logList.Add($"[{_player.GetType().Name}]은(는) [{_skill.name}]을(를) 사용했다!");
-                if(_skillType == 0)
-                    logList.Add($"[{_monster.GetType().Name}]은(는) {_power}의 피해를 받았다!");
-                else if( _skillType == 1)
+                if (_skillType == 0)
+                {
+                    if(_power == -1)
+                        logList.Add($"[{_monster.GetType().Name}]은(는) 잽싸게 회피했다!");
+                    else
+                    {
+                        if(_isCrit)
+                            logList.Add($"A SINGULAR STRIKE!!!");
+                        logList.Add($"[{_monster.GetType().Name}]은(는) {_power}의 피해를 받았다!");
+                    }
+                }
+                else if (_skillType == 1)
                     logList.Add($"[{_player.GetType().Name}]은(는) {_power}만큼 회복했다!");
             }
 
