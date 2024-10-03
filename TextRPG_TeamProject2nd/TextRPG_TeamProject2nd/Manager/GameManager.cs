@@ -347,6 +347,11 @@ namespace TextRPG_TeamProject2nd.Manager
             Console.WriteLine("[0]:마을로이동");
             int input = InputKey();
             if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
+
+            if(input == 1)
+            {
+                if(player)
+            }
         }
 
 
