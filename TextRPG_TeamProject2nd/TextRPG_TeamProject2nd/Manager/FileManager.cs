@@ -95,6 +95,7 @@ namespace TextRPG_TeamProject2nd.Manager
             player.GetInfo().questId = int.Parse(inData[13]);
             player.GetInfo().questProgress = int.Parse(inData[14]);
 
+            streamReader.Close();
             return true;      
         }
         

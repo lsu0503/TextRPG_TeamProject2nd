@@ -119,6 +119,7 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneVIllage()
         {
             Console.Clear();
+            player.BackVill();
             UIManager.DisplayTitle("애니멀리아 가도");
             UIManager.DisplayVillageMenu();
             UIManager.DisplayPlayerInfoVillage(player);
@@ -133,35 +134,137 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneFiled()
         {
             Console.Clear();
-            Console.WriteLine("던전을 고르세요!");
-            Console.WriteLine("[0]:마을로이동 [번호]:해당 던전");
+            UIManager.DisplayTitle("원정 고양이 협회");
+            UIManager.DisplayDungeonList();
+            UIManager.DisplayPlayerInfoVillage(player);
+            UIManager.PositionCursorToInput();    
             int input = InputKey();
-            int maxId = 0; // TODO
-            if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
-            for(int i = 0; i < maxId; i++)
+            if(input == 0) 
             {
-                Console.WriteLine($"{i}." + ObjectManager.Instance().GetMap(i).mapInfo.name);
+                ChangeScene(SCENESTATE.VILLAGE);
+                return;
             }
 
             Random random = new Random();
-            Map map = ObjectManager.Instance().GetMap(input);
-            List<int> ids = map.mapInfo.mobId;
-            List<Monster> currentMobs = new List<Monster>(); 
-
-           
-
-            while(true)
+            Map map = ObjectManager.Instance().GetMap(input - 1);
+            List<int> MobNums = map.mapInfo.mobId;
+            List<int> BossNums = map.mapInfo.bossId;
+            int maxFloor = map.mapInfo.floor;
+            int mobCount = 0;
+            List<Monster> currentMobs = new List<Monster>();
+            
+            for(int i = 0; i < maxFloor; i++)
             {
+                if (i == maxFloor - 1)
+                {
+                    currentMobs.Add(ObjectManager.Instance().GetMonster(BossNums[random.Next(0, BossNums.Count)]));
+                    break;
+                }
+                currentMobs.Add(ObjectManager.Instance().GetMonster(MobNums[random.Next(0, MobNums.Count)]));
+            } //몬스터 세팅
+            Monster mob = currentMobs[mobCount];
+            mob.Init();//몬스터는 꼭 초기화가 되어야 사용가능
+         
+            while(true)//던전내부
+            {
+                Console.Clear();
+                /*UIManager.DisplayLog();
+                UIManager.DisplayDungeonInfo(map, mobCount);
+                UIManager.DisplayEnemyInfo(mob);
+                UIManager.DisplayPlayerInfoDungeon(player);*/
+                Console.WriteLine($"현재 남은 몬스터 : {maxFloor - mobCount}");
+                Console.WriteLine($"[{mob.GetInfo().name}] HP:{mob.GetInfo().hp}/{mob.GetInfo().maxHp}");
+                Console.WriteLine($"[{player.GetInfo().name}] HP:{player.GetInfo().hp}/{player.GetInfo().maxHp}");
+
                 isTurn = true;
                 while (true) //플레이어
                 {
+                    //UIManager.PositionCursorToInput();
+                    Console.WriteLine("0턴넘기기 1스킬 2아이템");
+                    int PlayerInput = InputKey();
+                    if (PlayerInput == 0) break;
 
+                    if (PlayerInput == 1)
+                    {
+                        int index = 0;
+                        List<Skill> skills = player.GetPlayerSkillList();
+                        foreach (Skill skill in skills)
+                        {
+                            Console.WriteLine($"[{index}].{skill.name}");
+                            index++;
+                        }
+
+                        //UIManager.PositionCursorToInput();
+                        int SkillInput = InputKey();
+                        if (skills[SkillInput].type == SKILLTYPE.ATTACK && !(player.GetInfo().actionPoint < 0))
+                        {
+                            int val = player.UseSkill(SkillInput, mob);
+                            Console.WriteLine($"{mob.GetInfo().name}에게 {val}만큼의 데미지를 주었다!");
+                        }
+                        else if (skills[SkillInput].type == SKILLTYPE.HEAL && !(player.GetInfo().actionPoint < 0))
+                        {
+                            int val = player.UseSkill(SkillInput, mob);
+                            Console.WriteLine($"플레이어는 {val}만큼 회복했다.");
+                        }
+                    }
+
+                    if (PlayerInput == 2)
+                    {
+                        Console.WriteLine("당신은 " + player.UseItem() + "만큼 회복했습니다.");
+                        continue;
+                    }
+
+                    Console.ReadLine();
                 }
 
                 isTurn = false;
-                while (true) //몬스터
+                if(true) //몬스터
                 {
+                    int val = mob.UseSkill(player);
+                    Console.WriteLine($"몬스터가 당신에게 {val}만큼의 피해를 주었다!");
+                    Console.ReadLine();
+                }
 
+                if(mob.GetInfo().hp <= 0)
+                {
+                    mobCount++;
+                    if(mobCount >= maxFloor)
+                    {
+                        Console.WriteLine("모든 적 처리");
+                        Console.ReadLine();
+                        ChangeScene(SCENESTATE.VILLAGE);
+                        return;
+                    }
+
+                    {
+                        Console.WriteLine("몬스터가 사망했습니다.");
+                        Item item = mob.Drops();
+                        if(item.id != -1)
+                        {
+                            Console.WriteLine($"{item.name}을 얻었다!");
+                            player.PushInven(item);
+                        }
+                        int moneyDrop = 20 + (mob.GetInfo().level * 3);
+                        int exp = 20 + (mob.GetInfo().level * 2);
+                        player.GetInfo().money += moneyDrop;
+                        Console.WriteLine(moneyDrop + "만큼의 골드를 얻었다!");
+                        Console.WriteLine(exp + "만큼의 경험치를 얻었다!");
+                        Console.ReadLine();
+
+                        mob = currentMobs[mobCount];
+                        mob.Init();
+                    }
+                }
+
+                if(player.GetInfo().hp <= 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("사망..");
+                    ChangeScene(SCENESTATE.MAIN);
+                    currentMobs.Clear();
+                    Console.ReadLine();
+                    Console.Clear();
+                    return;
                 }
             }
         }
@@ -181,13 +284,12 @@ namespace TextRPG_TeamProject2nd.Manager
                 int input = -1;
                 if(signal == 1) //구매
                 {
-                                  
+                    UIManager.DisplayTitle("래비츠 인더스트리");
+                    UIManager.DisplayShopBuyList();
+                    UIManager.DisplayPlayerInfoVillage(player);
+                    UIManager.PositionCursorToInput();
+
                     int index = 1;
-                    foreach (Item it in storeList)//상점 리스트업
-                    {
-                        Console.WriteLine(index + " " + it.name);
-                        index++;
-                    }
 
                     input = InputKey();
                     if (input == 0) break;
@@ -199,23 +301,24 @@ namespace TextRPG_TeamProject2nd.Manager
 
                     player.GetInfo().money -= item.value;
                     player.PushInven(item);
-                    Console.ReadLine();
+                    
+                    UIManager.DisplayShopBuyText(storeList[input - 1]);
+                    Console.ReadKey();
                 }
                 else if(signal == 2) //판매
                 {
-                    int index = 1;
-                    foreach (Item it in player.GetPlayerInvenList())
-                    {
-                        Console.WriteLine(index +"."+ it.name);
-                        index++;
-                    }
+                    UIManager.DisplayTitle("래비츠 인더스트리");
+                    UIManager.DisplayShopSellScreen(player);
+                    UIManager.DisplayPlayerInfoVillage(player);
+                    UIManager.PositionCursorToInput();
 
                     input = InputKey();
                     if (input == 0) break;
                     if (input > storeList.Count || input < 0) continue;
 
+                    UIManager.DisplayShopSellText(player.GetPlayerInvenList()[input - 1]);
                     player.GetInfo().money += player.PopInven(input - 1);
-                    Console.ReadLine();
+                    Console.ReadKey();
                 }
 
             }
@@ -224,27 +327,18 @@ namespace TextRPG_TeamProject2nd.Manager
         private void SceneInven()
         {
             Console.Clear();
-            Console.WriteLine("아이템을 보관하고 장착하는 인벤토리 입니다.");
-            Console.WriteLine("[0]:마을로이동");
-
-            Console.WriteLine("이름     : " + player.GetInfo().name);
-            Console.WriteLine("종족     : " + player.GetInfo().race);
-            Console.WriteLine("무기     : " + player.GetInfo().weaponId);
-            Console.WriteLine("방어구   : " + player.GetInfo().armorId);
-            Console.WriteLine("레벨     : " + player.GetInfo().level);
-            Console.WriteLine("체력     : " + player.GetInfo().hp +"/"+ player.GetInfo().maxHp);
-            Console.WriteLine("공격력   : " + player.GetInfo().attack);
-            Console.WriteLine("방어력   : " + player.GetInfo().defence);
-            Console.WriteLine("AP       : " + player.GetInfo().actionPoint);
-            Console.WriteLine("경험치   : " + player.GetInfo().exp +"/"+ player.GetInfo().maxExp);
-            Console.WriteLine("소지금   : " + player.GetInfo().money);
-
+            UIManager.DisplayTitle("랫츠 보이드 오프너");
+            UIManager.DisplayInventory(player);
+            UIManager.DisplayPlayerInfoVillage(player);
+            UIManager.PositionCursorToInput();
+           
             int input = InputKey();
-            if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
+            if (input <= 0) { ChangeScene(SCENESTATE.VILLAGE); return; }
 
-            List<Item> temp = player.GetPlayerInvenList();
-            for (int i = 0; i < temp.Count; i++)
-                Console.WriteLine($"[{i}] " + temp[i].name);
+            UIManager.DisplayEquipText(player.GetPlayerInvenList()[input - 1]);
+            player.EQItem(input - 1);
+            Console.ReadKey();
+
         }
         private void SceneOuest()
         {
@@ -254,6 +348,7 @@ namespace TextRPG_TeamProject2nd.Manager
             int input = InputKey();
             if (input == 0) ChangeScene(SCENESTATE.VILLAGE);
         }
+
 
         //유틸
         private void ChangeScene(SCENESTATE type)
