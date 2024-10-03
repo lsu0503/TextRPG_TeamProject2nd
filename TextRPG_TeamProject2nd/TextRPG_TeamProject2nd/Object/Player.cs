@@ -221,13 +221,14 @@ namespace TextRPG_TeamProject2nd.Object
             weapon = ObjectManager.Instance().GetItem(playerInfo.weaponId);
             armor = ObjectManager.Instance().GetItem(playerInfo.armorId);
 
-            foreach(int id in weapon.skill)
+            if(weapon != null)
+                foreach(int id in weapon.skill)
             {
                 skillList.Add(ObjectManager.Instance().GetSkill(id));
             }
             
-            //quest = ObjectManager.Instance().GetQuest(playerInfo.questId);
-            //quest.questProgressAmount = playerInfo.questProgress;
+            quest = ObjectManager.Instance().GetQuest(playerInfo.questId);
+            quest.questProgressAmount = playerInfo.questProgress;
         }
 
         public Quest GetCurrentQuest()
@@ -258,7 +259,7 @@ namespace TextRPG_TeamProject2nd.Object
 
             streamWriter.WriteLine(outData);
             streamWriter.Close();
-        }
+        }//이동
 
         void LoadInven()
         {
