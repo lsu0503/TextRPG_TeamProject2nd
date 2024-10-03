@@ -485,11 +485,11 @@ namespace TextRPG_TeamProject2nd.Manager
                         if (int.Parse(packet[1]) != 0)
                         {
                             item = ObjectManager.Instance().GetItem(int.Parse(packet[1]));
-                            Console.WriteLine($"{packet[0]}이(가) {item.name}을 보냈습니다.");
-                            Console.WriteLine($"{item.name}이(가) 인벤토리에 추가 되었습니다.");
+                            Console.WriteLine($"[{packet[0]}]이(가) [{item.name}]을 보냈습니다.");
+                            Console.WriteLine($"[{item.name}]이(가) 인벤토리에 추가 되었습니다.");
                             player.PushInven(item);
                         }
-                        Console.WriteLine($"{packet[0]}:{packet[2]}");
+                        Console.WriteLine($"[{packet[0]}]:{packet[2]}");
                         
                         Console.WriteLine("[0]:마을로 가기 [1]:계속하기");
                         int input = InputKey();
@@ -503,7 +503,7 @@ namespace TextRPG_TeamProject2nd.Manager
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("연결 종료..");
+                    Console.WriteLine("연결 종료.. [Enter:마을로 이동]");
                     Console.ReadLine();
                     ChangeScene(SCENESTATE.VILLAGE);
                     Connector.Instance().Close();
@@ -527,11 +527,11 @@ namespace TextRPG_TeamProject2nd.Manager
                         if (int.Parse(packet[1]) != 0)
                         {
                             item = ObjectManager.Instance().GetItem(int.Parse(packet[1]));
-                            Console.WriteLine($"{packet[0]}이(가) {item.name}을 보냈습니다.");
-                            Console.WriteLine($"{item.name}이(가) 인벤토리에 추가 되었습니다.");
+                            Console.WriteLine($"[{packet[0]}]이(가) [{item.name}]을 보냈습니다.");
+                            Console.WriteLine($"[{item.name}]이(가) 인벤토리에 추가 되었습니다.");
                             player.PushInven(item);
                         }
-                        Console.WriteLine($"{packet[0]}:{packet[2]}");
+                        Console.WriteLine($"[{packet[0]}]:{packet[2]}");
 
                         Console.WriteLine("[0]:마을로 가기 [1]:계속하기");
                         int input = InputKey();
@@ -544,7 +544,7 @@ namespace TextRPG_TeamProject2nd.Manager
                         //-------------------------
 
                         int index = 1;
-                        Console.WriteLine("보낼 아이템을 선택하세요. [아이템번호:보내기]");
+                        Console.WriteLine("보낼 아이템을 선택하세요. [아이템번호:보내기] [0:메세지만 보내기]");
                         foreach (Item it in player.GetPlayerInvenList())
                         {
                             Console.WriteLine($"{index} : {it.name}");
@@ -570,7 +570,7 @@ namespace TextRPG_TeamProject2nd.Manager
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("연결 종료..");
+                    Console.WriteLine("연결 종료.. [Enter:마을로 이동]");
                     Console.ReadLine();
                     ChangeScene(SCENESTATE.VILLAGE);
                     Connector.Instance().Close();
