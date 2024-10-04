@@ -1,6 +1,5 @@
 ﻿using TeamProjectBin;
 using TextRPG_TeamProject2nd.Object;
-using TextRPG_TeamProject2nd.Utils;
 namespace TextRPG_TeamProject2nd.Manager
 {
     enum SCENESTATE
@@ -153,6 +152,7 @@ namespace TextRPG_TeamProject2nd.Manager
 
             Random random = new Random();
             Map map = ObjectManager.Instance().GetMap(input - 1);
+            if (map == null) return;
             List<int> MobNums = map.mapInfo.mobId;
             List<int> BossNums = map.mapInfo.bossId;
             int maxFloor = map.mapInfo.floor;
@@ -327,7 +327,7 @@ namespace TextRPG_TeamProject2nd.Manager
             {
                 Console.Clear();
                 int input = -1;
-                if(signal == 1) //구매
+                if (signal == 1) //구매
                 {
                     UIManager.DisplayTitle("래비츠 인더스트리");
                     UIManager.DisplayShopBuyList();
@@ -346,11 +346,11 @@ namespace TextRPG_TeamProject2nd.Manager
 
                     player.GetInfo().money -= item.value;
                     player.PushInven(item);
-                    
+
                     UIManager.DisplayShopBuyText(storeList[input - 1]);
                     Console.ReadKey();
                 }
-                else if(signal == 2) //판매
+                else if (signal == 2) //판매
                 {
                     UIManager.DisplayTitle("래비츠 인더스트리");
                     UIManager.DisplayShopSellScreen(player);
@@ -365,6 +365,7 @@ namespace TextRPG_TeamProject2nd.Manager
                     player.GetInfo().money += player.PopInven(input - 1);
                     Console.ReadKey();
                 }
+                else if (signal >= 3 || signal < 0) { break; }
 
             }
             
